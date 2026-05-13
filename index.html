@@ -70,7 +70,7 @@
     });
   }
 
-  function addRow() {
+ function addRow() {
     const date = prompt("請輸入日期 (例如 May-26)", "May-26");
     const name = prompt("請輸入貨名");
     const price = parseFloat(prompt("價錢"));
@@ -78,12 +78,22 @@
     const cost = parseFloat(prompt("成本"));
 
     if (name && price && qty && cost) {
-      fetch(webAppUrl, {
-        method: 'POST',
-        body: JSON.stringify({date, name, price, qty, cost, month: currentMonth})
-      }).then(() => loadData());
+        // 顯示載入中...
+        console.log("正在儲存...");
+        
+        fetch(webAppUrl, {
+            method: 'POST',
+            mode: 'no-cors', // 重要：避免跨網域權限報錯
+            body: JSON.stringify({date, name, price, qty, cost, month: currentMonth}),
+            headers: { "Content-Type": "text/plain" } // 避開 preflight 檢查
+        })
+        .then(() => {
+            alert("資料已送出！(請等待約 2-3 秒後手動重新整理)");
+            loadData();
+        })
+        .catch(err => alert("儲存失敗：" + err));
     }
-  }
+}
 
   function updateField(row, field, input) {
     // 目前簡化版只支援新增，修改功能可後續再加
