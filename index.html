@@ -178,7 +178,7 @@
     // 🟢 畫面優化：在 fetch 發送前，先讓表格顯示「讀取中」，提升 iPhone 使用體驗
     const tbody = document.querySelector("#dataTable tbody");
     const tfoot = document.querySelector("#dataTable tfoot");
-    tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:30px; color:#3498db; font-weight:bold;">🔄 正在連線 Google Sheet 讀取資料...</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:30px; color:#3498db; font-weight:bold;">🔄 正在讀取資料...</td></tr>`;
     tfoot.innerHTML = "";
 
     try {
