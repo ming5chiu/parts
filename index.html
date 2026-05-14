@@ -76,7 +76,7 @@
     th:nth-child(3) { width: 75px; }  /* 價錢 */
     th:nth-child(4) { width: 55px; }  /* 數量：縮窄，不預留多闊 */
     th:nth-child(5) { width: 80px; }  /* 總數 */
-    th:nth-child(6) { width: 65px; }  /* 成本：縮窄，不預留多闊 */
+    th:nth-child(6) { width: 75px; }  /* 成本：縮窄，不預留多闊 */
     th:nth-child(7) { width: 80px; }  /* 港幣 */
     th:nth-child(8) { width: 80px; }  /* 賺取 */
     th:nth-child(9) { width: 65px; }  /* 操作 */
@@ -272,7 +272,7 @@
       `;
       tfoot.appendChild(totalTr);
     } else {
-      tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:30px; color:#7f8c8d;">📅 本月尚無進銷存資料</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:30px; color:#7f8c8d;">📅 本月無資料紀錄</td></tr>`;
     }
   }
 
