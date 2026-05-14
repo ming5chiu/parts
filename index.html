@@ -5,122 +5,124 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>每月進銷存</title>
   <style>
-    :root {
-      --primary-color: #2c3e50;
-      --accent-color: #3498db;
-      --success-color: #2ecc71;
-    }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-      background: #f4f6f9;
-      padding: 10px;
-      margin: 0;
-      -webkit-font-smoothing: antialiased;
-    }
-    h1 {
-      text-align: center;
-      color: var(--primary-color);
-      font-size: 22px;
-      margin: 15px 0;
-    }
-    .controls {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      justify-content: center;
-      margin-bottom: 15px;
-    }
-    .controls input[type="month"], .controls button {
-      padding: 12px;
-      font-size: 15px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      box-sizing: border-box;
-      flex: 1 1 calc(50% - 8px);
-      min-width: 120px;
-    }
-    .controls button {
-      background: var(--primary-color);
-      color: white;
-      border: none;
-      font-weight: bold;
-      cursor: pointer;
-      -webkit-appearance: none;
-    }
-    .controls button:active {
-      opacity: 0.8;
-    }
-    /* 📱 iPhone 手機版核心防破版容器 */
-    .table-container {
-      width: 100%;
-      overflow-x: auto;
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-      -webkit-overflow-scrolling: touch; /* 讓 iPhone 滑動極度流暢 */
-    }
-    table {
-      width: 100%;
-      min-width: 750px; /* 🔴 鎖定最小寬度，確保 iPhone 上欄位不擠壓變形 */
-      border-collapse: collapse;
-    }
-    th {
-      background: var(--primary-color);
-      color: white;
-      padding: 12px 6px;
-      font-size: 14px;
-      position: sticky;
-      top: 0;
-    }
-    td {
-      padding: 8px 6px;
-      border-bottom: 1px solid #eee;
-      text-align: right;
-    }
-    /* 🔴 鎖定 iPhone 輸入框字體為 16px，防止 iOS 自動放大畫面 */
-    input[type="text"], input[type="number"] {
-      width: 100%;
-      border: 1px solid transparent;
-      background: transparent;
-      text-align: right;
-      font-size: 16px; 
-      padding: 6px 4px;
-      box-sizing: border-box;
-      border-radius: 4px;
-    }
-    input:focus {
-      background: #fffacd;
-      border-color: var(--accent-color);
-      outline: none;
-    }
-    .calculated {
-      background: #f8fbfd;
-      font-weight: bold;
-      color: #34495e;
-    }
-    .profit {
-      background: #ebfbf2;
-      color: #27ae60;
-      font-weight: bold;
-    }
-    /* 📊 總計行專屬樣式 */
-    .total-row {
-      background: #eaeded;
-      font-weight: bold;
-    }
-    .total-row td {
-      border-top: 2px solid var(--primary-color);
-      border-bottom: 2px double var(--primary-color);
-      color: #1b2631;
-    }
-    .delete-btn {
-      background: #e74c3c;
-      color: white;
-      border: none;
-      padding: 6px 10px;
-      border-radius: 4px;
-      font-size: 13px;
-    }
+      :root {
+    --primary-color: #e0e4e8; /* 🟢 改為柔和的淺灰色 */
+    --text-color: #2c3e50;
+    --accent-color: #3498db;
+    --success-color: #2ecc71;
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: #f4f6f9;
+    padding: 15px;
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1 {
+    text-align: center;
+    color: var(--text-color);
+    font-size: 22px;
+    margin: 15px 0;
+  }
+  /* 🟢 修正：還原為單行排列控制列，並在手機上限時左右滑動不變形 */
+  .controls {
+    display: flex;
+    flex-wrap: nowrap; /* 確保絕對保持在同一行 */
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 15px;
+    overflow-x: auto; /* 手機版如果太擠允許微幅滑動 */
+    padding-bottom: 5px;
+  }
+  /* 🟢 修正：按鈕與輸入框大小與外觀，改為淺色 */
+  .controls input[type="month"], .controls button {
+    padding: 10px 14px;
+    font-size: 15px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    white-space: nowrap; /* 確保按鈕文字不變兩行 */
+  }
+  .controls button {
+    background: var(--primary-color);
+    color: var(--text-color); /* 淺色背景配深色字 */
+    font-weight: normal;
+    cursor: pointer;
+    -webkit-appearance: none;
+  }
+  .controls button:active {
+    background: #d0d4d8;
+  }
+  /* 📱 iPhone 手機版防破版表格容器 */
+  .table-container {
+    width: 100%;
+    overflow-x: auto;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    -webkit-overflow-scrolling: touch;
+  }
+  table {
+    width: 100%;
+    min-width: 750px; /* 鎖定最小寬度，確保欄位看得清晰 */
+    border-collapse: collapse;
+  }
+  th {
+    background: #34495e; /* 表格標題維持穩重深色以利閱讀 */
+    color: white;
+    padding: 12px 8px;
+    font-size: 14px;
+  }
+  td {
+    padding: 10px 8px;
+    border-bottom: 1px solid #eee;
+    text-align: right;
+  }
+  /* iPhone 輸入框字體鎖定 16px 防止自動縮放 */
+  input[type="text"], input[type="number"] {
+    width: 100%;
+    border: 1px solid transparent;
+    background: transparent;
+    text-align: right;
+    font-size: 16px; 
+    padding: 6px 4px;
+    box-sizing: border-box;
+    border-radius: 4px;
+  }
+  input:focus {
+    background: #fffacd;
+    border-color: var(--accent-color);
+    outline: none;
+  }
+  .calculated {
+    background: #f8fbfd;
+    font-weight: bold;
+    color: #34495e;
+  }
+  .profit {
+    background: #ebfbf2;
+    color: #27ae60;
+    font-weight: bold;
+  }
+  /* 📊 Total 總計行樣式 */
+  .total-row {
+    background: #eaeded;
+    font-weight: bold;
+  }
+  .total-row td {
+    border-top: 2px solid #34495e;
+    border-bottom: 2px double #34495e;
+    color: #1b2631;
+  }
+  .delete-btn {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-size: 13px;
+  }
+
   </style>
 </head>
 <body>
