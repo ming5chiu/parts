@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>每月零件紀錄</title>
 
-    <!-- 🟢 設定 iPhone 桌面書籤讀取同目錄下的自訂圖檔 -->
   <link rel="apple-touch-icon" href="icon.png">
   <link rel="apple-touch-icon" sizes="180x180" href="icon.png">
   
@@ -68,18 +67,36 @@
       width: 100%;
       min-width: 750px; 
       border-collapse: collapse;
+      table-layout: fixed; /* 固定佈局，讓我們能精準控制各欄寬度 */
     }
+    
+    /* 🛠️ 精準控制每欄寬度比例 */
+    th:nth-child(1) { width: 75px; }  /* 日期 */
+    th:nth-child(2) { width: auto; }  /* 貨名：自動伸展，留到最闊 */
+    th:nth-child(3) { width: 75px; }  /* 價錢 */
+    th:nth-child(4) { width: 55px; }  /* 數量：縮窄，不預留多闊 */
+    th:nth-child(5) { width: 80px; }  /* 總數 */
+    th:nth-child(6) { width: 65px; }  /* 成本：縮窄，不預留多闊 */
+    th:nth-child(7) { width: 80px; }  /* 港幣 */
+    th:nth-child(8) { width: 80px; }  /* 賺取 */
+    th:nth-child(9) { width: 65px; }  /* 操作 */
+
     th {
       background: #34495e; 
       color: white;
-      padding: 12px 8px;
+      padding: 12px 4px;
       font-size: 14px;
     }
     td {
-      padding: 10px 8px;
+      padding: 10px 4px;
       border-bottom: 1px solid #eee;
       text-align: right;
     }
+    
+    /* 貨名欄位靠左對齊，方便閱讀 */
+    th:nth-child(2) { text-align: left; padding-left: 8px; }
+    td:nth-child(2) { text-align: left; padding-left: 8px; }
+
     input[type="text"], input[type="number"] {
       width: 100%;
       border: 1px solid transparent;
@@ -90,6 +107,12 @@
       box-sizing: border-box;
       border-radius: 4px;
     }
+    
+    /* 貨名輸入框文字靠左 */
+    td:nth-child(2) input[type="text"] {
+      text-align: left;
+    }
+
     input:focus {
       background: #fffacd;
       border-color: var(--accent-color);
@@ -125,6 +148,7 @@
       padding: 6px 10px;
       border-radius: 4px;
       font-size: 13px;
+      cursor: pointer;
     }
     .saving-status {
       position: fixed;
@@ -171,11 +195,11 @@
   // 🔴 請確保此處換回您的真實後端網址
   const webAppUrl = "https://script.google.com/macros/s/AKfycbz5q4zQLBg16QKrbBU1q7I5QwVyRUwMKX6k3CCa3mqGLRotnG9OWVSt6Z8L2ZUpxPHB/exec";
 
-    async function loadData() {
+  async function loadData() {
     currentMonth = document.getElementById('monthSelect').value;
     if (!currentMonth) return;
 
-    // 🟢 畫面優化：在 fetch 發送前，先讓表格顯示「讀取中」，提升 iPhone 使用體驗
+    // 🟢 畫面優化：在 fetch 發送前，先讓表格顯示「讀取中」
     const tbody = document.querySelector("#dataTable tbody");
     const tfoot = document.querySelector("#dataTable tfoot");
     tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:30px; color:#3498db; font-weight:bold;">🔄 正在讀取資料...</td></tr>`;
@@ -184,8 +208,6 @@
     try {
       const res = await fetch(webAppUrl + "?month=" + currentMonth);
       const result = await res.json();
-      
-      // 後續的 renderInterface() 會自動把這個「讀取中」覆蓋掉，變成真實資料...
       
       if (result.success && Array.isArray(result.data)) {
         localDataCached = result.data;
@@ -237,7 +259,6 @@
     if (localDataCached.length > 0) {
       const totalTr = document.createElement("tr");
       totalTr.className = "total-row";
-      // 🟢 修正：名稱改為「總計」，數量改為「-」
       totalTr.innerHTML = `
         <td style="text-align:center;">總計</td>
         <td>-</td>
@@ -305,7 +326,6 @@
     }
   }
 
-  // 🟢 這裡可自行替換成您的 Google 試算表編輯網址
   function openSheet() {
     window.open('https://docs.google.com/spreadsheets/d/1yApB5X49TBWWXnYQmVJVCgHGW8cpax43U43rCGgkBHg/edit?pli=1&gid=0#gid=0', '_blank');
   }
