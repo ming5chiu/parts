@@ -1,24 +1,130 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-HK">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>每月進銷存</title>
   <style>
-    body {font-family: "Microsoft JhengHei", sans-serif; background:#f4f6f9; padding:15px; margin:0;}
-    h1 {text-align:center; color:#2c3e50;}
-    .controls {text-align:center; margin:15px 0;}
-    button {padding:12px 18px; margin:5px; font-size:16px; border-radius:8px;}
-    table {width:100%; border-collapse:collapse; background:white; box-shadow:0 4px 12px rgba(0,0,0,0.1);}
-    th {background:#2c3e50; color:white; padding:12px 8px;}
-    td {padding:10px 8px; border-bottom:1px solid #eee; text-align:right;}
-    input {width:100%; border:none; background:transparent; text-align:right; font-size:16px;}
-    input:focus {background:#fffacd; outline:2px solid #3498db;}
-    .calculated {background:#e8f4fc; font-weight:bold;}
-    .profit {background:#d4f4e0; color:#1e8449; font-weight:bold;}
+    :root {
+      --primary-color: #2c3e50;
+      --accent-color: #3498db;
+      --success-color: #2ecc71;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: #f4f6f9;
+      padding: 10px;
+      margin: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+    h1 {
+      text-align: center;
+      color: var(--primary-color);
+      font-size: 22px;
+      margin: 15px 0;
+    }
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 15px;
+    }
+    .controls input[type="month"], .controls button {
+      padding: 12px;
+      font-size: 15px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+      flex: 1 1 calc(50% - 8px);
+      min-width: 120px;
+    }
+    .controls button {
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+      -webkit-appearance: none;
+    }
+    .controls button:active {
+      opacity: 0.8;
+    }
+    /* 📱 iPhone 手機版核心防破版容器 */
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      -webkit-overflow-scrolling: touch; /* 讓 iPhone 滑動極度流暢 */
+    }
+    table {
+      width: 100%;
+      min-width: 750px; /* 🔴 鎖定最小寬度，確保 iPhone 上欄位不擠壓變形 */
+      border-collapse: collapse;
+    }
+    th {
+      background: var(--primary-color);
+      color: white;
+      padding: 12px 6px;
+      font-size: 14px;
+      position: sticky;
+      top: 0;
+    }
+    td {
+      padding: 8px 6px;
+      border-bottom: 1px solid #eee;
+      text-align: right;
+    }
+    /* 🔴 鎖定 iPhone 輸入框字體為 16px，防止 iOS 自動放大畫面 */
+    input[type="text"], input[type="number"] {
+      width: 100%;
+      border: 1px solid transparent;
+      background: transparent;
+      text-align: right;
+      font-size: 16px; 
+      padding: 6px 4px;
+      box-sizing: border-box;
+      border-radius: 4px;
+    }
+    input:focus {
+      background: #fffacd;
+      border-color: var(--accent-color);
+      outline: none;
+    }
+    .calculated {
+      background: #f8fbfd;
+      font-weight: bold;
+      color: #34495e;
+    }
+    .profit {
+      background: #ebfbf2;
+      color: #27ae60;
+      font-weight: bold;
+    }
+    /* 📊 總計行專屬樣式 */
+    .total-row {
+      background: #eaeded;
+      font-weight: bold;
+    }
+    .total-row td {
+      border-top: 2px solid var(--primary-color);
+      border-bottom: 2px double var(--primary-color);
+      color: #1b2631;
+    }
+    .delete-btn {
+      background: #e74c3c;
+      color: white;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 4px;
+      font-size: 13px;
+    }
   </style>
 </head>
 <body>
+
   <h1>每月進銷存統計表</h1>
   
   <div class="controls">
@@ -27,72 +133,98 @@
     <button onclick="openSheet()">📊 開啟 Google Sheet</button>
   </div>
 
-  <table id="dataTable">
-    <thead>
-      <tr>
-        <th>日期</th><th>貨名</th><th>價錢</th><th>數量</th><th>總數</th>
-        <th>成本</th><th>港幣</th><th>賺取</th><th>操作</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+  <!-- 📱 手機滑動包裝層 -->
+  <div class="table-container">
+    <table id="dataTable">
+      <thead>
+        <tr>
+          <th>日期</th><th>貨名</th><th>價錢</th><th>數量</th><th>總數</th>
+          <th>成本</th><th>港幣</th><th>賺取</th><th>操作</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+      <tfoot><!-- 🔴 這裡會自動生成總計欄位 --></tfoot>
+    </table>
+  </div>
 
 <script>
   let currentMonth = '';
-  const webAppUrl = "https://script.google.com/macros/s/AKfycbz5q4zQLBg16QKrbBU1q7I5QwVyRUwMKX6k3CCa3mqGLRotnG9OWVSt6Z8L2ZUpxPHB/exec";   // ← 稍後替換
+  const webAppUrl = "google.com";
 
-    async function loadData() {
+  async function loadData() {
     currentMonth = document.getElementById('monthSelect').value;
-    
-    // 防呆：如果未選擇月份則中斷執行
     if (!currentMonth) return;
 
     try {
       const res = await fetch(webAppUrl + "?month=" + currentMonth);
-      const result = await res.json(); // 🔴 重新命名變數避免混淆
+      const result = await res.json();
       
       const tbody = document.querySelector("#dataTable tbody");
+      const tfoot = document.querySelector("#dataTable tfoot");
       tbody.innerHTML = "";
+      tfoot.innerHTML = "";
       
-      // 🔴 關鍵修正：檢查後端是否成功回傳，並正確讀取 result.data 陣列
       if (result.success && Array.isArray(result.data)) {
-        
+        // 🔴 初始化總計變數
+        let totalQty = 0;
+        let totalSum = 0;
+        let totalHkd = 0;
+        let totalProfit = 0;
+
         result.data.forEach(item => {
-          // 🟢 直接讀取後端已經計算好並回傳的欄位數值
-          const total = item.total || 0;
-          const hkd = item.hkd || 0;
-          const profit = item.profit || 0;
+          const total = Number(item.total) || 0;
+          const hkd = Number(item.hkd) || 0;
+          const profit = Number(item.profit) || 0;
+          const qty = Number(item.qty) || 0;
+
+          // 累加數值
+          totalQty += qty;
+          totalSum += total;
+          totalHkd += hkd;
+          totalProfit += profit;
           
           const tr = document.createElement("tr");
           tr.innerHTML = `
-            <td><input value="${item.date}" onchange="updateField(${item.row}, 'date', this)"></td>
-            <td><input value="${item.name}" onchange="updateField(${item.row}, 'name', this)"></td>
+            <td><input type="text" value="${item.date}" onchange="updateField(${item.row}, 'date', this)"></td>
+            <td><input type="text" value="${item.name}" onchange="updateField(${item.row}, 'name', this)"></td>
             <td><input type="number" value="${item.price}" onchange="updateField(${item.row}, 'price', this)"></td>
             <td><input type="number" value="${item.qty}" onchange="updateField(${item.row}, 'qty', this)"></td>
             <td class="calculated">¥${total}</td>
             <td><input type="number" value="${item.cost}" onchange="updateField(${item.row}, 'cost', this)"></td>
             <td class="calculated">$${hkd}</td>
             <td class="calculated profit">$${profit}</td>
-            <td><button onclick="deleteRecord(${item.row})">刪除</button></td>
+            <td style="text-align:center;"><button class="delete-btn" onclick="deleteRecord(${item.row})">刪除</button></td>
           `;
           tbody.appendChild(tr);
         });
 
-        // 如果該月份真的完全沒資料，顯示提示文字
-        if (result.data.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:20px; color:#7f8c8d;">📅 本月尚無進銷存資料</td></tr>`;
+        // 🟢 算完資料後，自動動態插入 Total 小計行
+        if (result.data.length > 0) {
+          const totalTr = document.createElement("tr");
+          totalTr.className = "total-row";
+          totalTr.innerHTML = `
+            <td style="text-align:center;">TOTAL</td>
+            <td>-</td>
+            <td>-</td>
+            <td>${totalQty}</td>
+            <td>¥${totalSum}</td>
+            <td>-</td>
+            <td>$${totalHkd}</td>
+            <td class="profit">$${totalProfit}</td>
+            <td></td>
+          `;
+          tfoot.appendChild(totalTr);
+        } else {
+          tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:30px; color:#7f8c8d;">📅 本月尚無進銷存資料</td></tr>`;
         }
 
-      } else {
-        console.error("後端回傳格式不正確:", result);
       }
     } catch (error) {
-      console.error("讀取 Google Sheet 失敗:", error);
+      console.error("讀取失敗:", error);
     }
   }
 
-
- function addRow() {
+  function addRow() {
     const date = prompt("請輸入日期 (例如 May-26)", "May-26");
     const name = prompt("請輸入貨名");
     const price = parseFloat(prompt("價錢"));
@@ -100,37 +232,33 @@
     const cost = parseFloat(prompt("成本"));
 
     if (name && price && qty && cost) {
-        // 顯示載入中...
-        console.log("正在儲存...");
-        
         fetch(webAppUrl, {
             method: 'POST',
-            mode: 'no-cors', // 重要：避免跨網域權限報錯
+            mode: 'no-cors',
             body: JSON.stringify({date, name, price, qty, cost, month: currentMonth}),
-            headers: { "Content-Type": "text/plain" } // 避開 preflight 檢查
+            headers: { "Content-Type": "text/plain" }
         })
         .then(() => {
-            alert("資料已送出！(請等待約 2-3 秒後手動重新整理)");
+            alert("資料已成功加入試算表！");
             loadData();
         })
         .catch(err => alert("儲存失敗：" + err));
     }
-}
+  }
 
   function updateField(row, field, input) {
-    // 目前簡化版只支援新增，修改功能可後續再加
-    alert("修改功能開發中，目前請使用 Google Sheet 直接修改");
+    alert("修改功能開發中，請先在 Google Sheet 中直接更改。");
   }
 
   function deleteRecord(row) {
-    if (confirm("確定刪除？")) {
+    if (confirm("確定要刪除這筆資料嗎？")) {
       fetch(webAppUrl + "?action=delete&row=" + row, {method: 'POST'})
         .then(() => loadData());
     }
   }
 
   function openSheet() {
-    window.open('https://docs.google.com/spreadsheets/d/1yApB5X49TBWWXnYQmVJVCgHGW8cpax43U43rCGgkBHg/edit?pli=1&gid=0#gid=0', '_blank');
+    window.open('google.com', '_blank');
   }
 
   window.onload = () => {
