@@ -150,7 +150,7 @@
 <script>
   let currentMonth = '';
   // 🟢 已經幫你接回正確的 Google Script 網址
-  const webAppUrl = "google.com";
+  const webAppUrl = "https://script.google.com/macros/s/AKfycbz5q4zQLBg16QKrbBU1q7I5QwVyRUwMKX6k3CCa3mqGLRotnG9OWVSt6Z8L2ZUpxPHB/exec";
 
   async function loadData() {
     currentMonth = document.getElementById('monthSelect').value;
@@ -257,7 +257,7 @@
   }
 
   function openSheet() {
-    window.open('google.com', '_blank');
+    window.open('https://docs.google.com/spreadsheets/d/1yApB5X49TBWWXnYQmVJVCgHGW8cpax43U43rCGgkBHg/edit?pli=1&gid=0#gid=0', '_blank');
   }
 
   window.onload = () => {
