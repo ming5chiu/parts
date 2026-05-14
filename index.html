@@ -143,12 +143,13 @@
         </tr>
       </thead>
       <tbody></tbody>
-      <tfoot><!-- 🔴 這裡會自動生成總計欄位 --></tfoot>
+      <tfoot><!-- 🔴 自動生成總計欄位 --></tfoot>
     </table>
   </div>
 
 <script>
   let currentMonth = '';
+  // 🟢 已經幫你接回正確的 Google Script 網址
   const webAppUrl = "google.com";
 
   async function loadData() {
@@ -165,7 +166,6 @@
       tfoot.innerHTML = "";
       
       if (result.success && Array.isArray(result.data)) {
-        // 🔴 初始化總計變數
         let totalQty = 0;
         let totalSum = 0;
         let totalHkd = 0;
@@ -177,7 +177,6 @@
           const profit = Number(item.profit) || 0;
           const qty = Number(item.qty) || 0;
 
-          // 累加數值
           totalQty += qty;
           totalSum += total;
           totalHkd += hkd;
@@ -198,7 +197,7 @@
           tbody.appendChild(tr);
         });
 
-        // 🟢 算完資料後，自動動態插入 Total 小計行
+        // 📊 生成總計行 (TOTAL Row)
         if (result.data.length > 0) {
           const totalTr = document.createElement("tr");
           totalTr.className = "total-row";
