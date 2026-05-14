@@ -41,34 +41,56 @@
   let currentMonth = '';
   const webAppUrl = "https://script.google.com/macros/s/AKfycbz5q4zQLBg16QKrbBU1q7I5QwVyRUwMKX6k3CCa3mqGLRotnG9OWVSt6Z8L2ZUpxPHB/exec";   // ← 稍後替換
 
-  async function loadData() {
+    async function loadData() {
     currentMonth = document.getElementById('monthSelect').value;
-    const res = await fetch(webAppUrl + "?month=" + currentMonth);
-    const data = await res.json();
     
-    const tbody = document.querySelector("#dataTable tbody");
-    tbody.innerHTML = "";
-    
-    data.forEach(item => {
-      const total = Math.round(item.price * item.qty);
-      const hkd = Math.round(item.qty * item.cost);
-      const profit = total - hkd;
+    // 防呆：如果未選擇月份則中斷執行
+    if (!currentMonth) return;
+
+    try {
+      const res = await fetch(webAppUrl + "?month=" + currentMonth);
+      const result = await res.json(); // 🔴 重新命名變數避免混淆
       
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td><input value="${item.date}" onchange="updateField(${item.row}, 'date', this)"></td>
-        <td><input value="${item.name}" onchange="updateField(${item.row}, 'name', this)"></td>
-        <td><input type="number" value="${item.price}" onchange="updateField(${item.row}, 'price', this)"></td>
-        <td><input type="number" value="${item.qty}" onchange="updateField(${item.row}, 'qty', this)"></td>
-        <td class="calculated">¥${total}</td>
-        <td><input type="number" value="${item.cost}" onchange="updateField(${item.row}, 'cost', this)"></td>
-        <td class="calculated">$${hkd}</td>
-        <td class="calculated profit">$${profit}</td>
-        <td><button onclick="deleteRecord(${item.row})">刪除</button></td>
-      `;
-      tbody.appendChild(tr);
-    });
+      const tbody = document.querySelector("#dataTable tbody");
+      tbody.innerHTML = "";
+      
+      // 🔴 關鍵修正：檢查後端是否成功回傳，並正確讀取 result.data 陣列
+      if (result.success && Array.isArray(result.data)) {
+        
+        result.data.forEach(item => {
+          // 🟢 直接讀取後端已經計算好並回傳的欄位數值
+          const total = item.total || 0;
+          const hkd = item.hkd || 0;
+          const profit = item.profit || 0;
+          
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td><input value="${item.date}" onchange="updateField(${item.row}, 'date', this)"></td>
+            <td><input value="${item.name}" onchange="updateField(${item.row}, 'name', this)"></td>
+            <td><input type="number" value="${item.price}" onchange="updateField(${item.row}, 'price', this)"></td>
+            <td><input type="number" value="${item.qty}" onchange="updateField(${item.row}, 'qty', this)"></td>
+            <td class="calculated">¥${total}</td>
+            <td><input type="number" value="${item.cost}" onchange="updateField(${item.row}, 'cost', this)"></td>
+            <td class="calculated">$${hkd}</td>
+            <td class="calculated profit">$${profit}</td>
+            <td><button onclick="deleteRecord(${item.row})">刪除</button></td>
+          `;
+          tbody.appendChild(tr);
+        });
+
+        // 如果該月份真的完全沒資料，顯示提示文字
+        if (result.data.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:20px; color:#7f8c8d;">📅 本月尚無進銷存資料</td></tr>`;
+        }
+
+      } else {
+        console.error("後端回傳格式不正確:", result);
+      }
+    } catch (error) {
+      console.error("讀取 Google Sheet 失敗:", error);
+    }
   }
+
 
  function addRow() {
     const date = prompt("請輸入日期 (例如 May-26)", "May-26");
