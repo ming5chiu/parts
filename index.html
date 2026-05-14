@@ -18,28 +18,28 @@
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       background: #f4f6f9;
-      padding: 15px;
+      padding: 8px; /* 稍微縮小外邊距，留更多空間給表格 */
       margin: 0;
       -webkit-font-smoothing: antialiased;
     }
     h1 {
       text-align: center;
       color: var(--text-color);
-      font-size: 22px;
-      margin: 15px 0;
+      font-size: 20px;
+      margin: 12px 0;
     }
     .controls {
       display: flex;
       flex-wrap: nowrap; 
-      gap: 8px;
+      gap: 6px;
       justify-content: center;
-      margin-bottom: 15px;
+      margin-bottom: 12px;
       overflow-x: auto; 
       padding-bottom: 5px;
     }
     .controls input[type="month"], .controls button {
-      padding: 10px 14px;
-      font-size: 15px;
+      padding: 8px 12px;
+      font-size: 14px;
       border-radius: 8px;
       border: 1px solid #ccc;
       box-sizing: border-box;
@@ -65,52 +65,55 @@
     }
     table {
       width: 100%;
-      min-width: 750px; 
+      min-width: 100%; /* 🚀 取消 750px 限制，完美適應 iPhone 寬度 */
       border-collapse: collapse;
-      table-layout: fixed; /* 固定佈局，讓我們能精準控制各欄寬度 */
+      table-layout: fixed; 
     }
     
-    /* 🛠️ 精準控制每欄寬度比例 */
-    th:nth-child(1) { width: 75px; }  /* 日期 */
-    th:nth-child(2) { width: auto; }  /* 貨名：自動伸展，留到最闊 */
-    th:nth-child(3) { width: 75px; }  /* 價錢 */
-    th:nth-child(4) { width: 55px; }  /* 數量：縮窄，不預留多闊 */
-    th:nth-child(5) { width: 80px; }  /* 總數 */
-    th:nth-child(6) { width: 65px; }  /* 成本：縮窄，不預留多闊 */
-    th:nth-child(7) { width: 80px; }  /* 港幣 */
-    th:nth-child(8) { width: 80px; }  /* 賺取 */
-    th:nth-child(9) { width: 65px; }  /* 操作 */
+    /* 🛠️ 重新精準分配 iPhone 螢幕比例（總數、港幣、賺取適度縮窄） */
+    th:nth-child(1) { width: 55px; }  /* 日期 */
+    th:nth-child(2) { width: auto; }  /* 貨名：自動伸展，分到最多剩餘空間 */
+    th:nth-child(3) { width: 50px; }  /* 價錢 */
+    th:nth-child(4) { width: 40px; }  /* 數量：極致縮窄 */
+    th:nth-child(5) { width: 55px; }  /* 總數 */
+    th:nth-child(6) { width: 45px; }  /* 成本：極致縮窄 */
+    th:nth-child(7) { width: 55px; }  /* 港幣 */
+    th:nth-child(8) { width: 55px; }  /* 賺取 */
+    th:nth-child(9) { width: 48px; }  /* 操作 */
 
     th {
       background: #34495e; 
       color: white;
-      padding: 12px 4px;
-      font-size: 14px;
+      padding: 10px 2px;
+      font-size: 12px; /* 稍微縮小表頭字體 */
     }
     td {
-      padding: 10px 4px;
+      padding: 8px 2px;
       border-bottom: 1px solid #eee;
       text-align: right;
+      font-size: 13px; /* 稍微縮小表格數字字體 */
     }
     
-    /* 貨名欄位靠左對齊，方便閱讀 */
-    th:nth-child(2) { text-align: left; padding-left: 8px; }
-    td:nth-child(2) { text-align: left; padding-left: 8px; }
+    /* 貨名欄位靠左對齊 */
+    th:nth-child(2) { text-align: left; padding-left: 4px; }
+    td:nth-child(2) { text-align: left; padding-left: 4px; }
 
     input[type="text"], input[type="number"] {
       width: 100%;
       border: 1px solid transparent;
       background: transparent;
       text-align: right;
-      font-size: 16px; 
-      padding: 6px 4px;
+      font-size: 14px; 
+      padding: 4px 2px;
       box-sizing: border-box;
       border-radius: 4px;
     }
     
-    /* 貨名輸入框文字靠左 */
+    /* 🚀 關鍵修改：允許貨名輸入框換行，不強制單行被截斷 */
     td:nth-child(2) input[type="text"] {
       text-align: left;
+      white-space: normal; 
+      word-break: break-all;
     }
 
     input:focus {
@@ -136,6 +139,7 @@
       border-top: 2px solid #34495e;
       border-bottom: 2px double #34495e;
       color: #1b2631;
+      font-size: 12px;
     }
     .total-row .total-profit {
       background: #fff9c4 !important;
@@ -145,9 +149,9 @@
       background: #e74c3c;
       color: white;
       border: none;
-      padding: 6px 10px;
+      padding: 4px 6px;
       border-radius: 4px;
-      font-size: 13px;
+      font-size: 11px;
       cursor: pointer;
     }
     .saving-status {
@@ -192,14 +196,12 @@
 <script>
   let currentMonth = '';
   let localDataCached = []; 
-  // 🔴 請確保此處換回您的真實後端網址
   const webAppUrl = "https://script.google.com/macros/s/AKfycbz5q4zQLBg16QKrbBU1q7I5QwVyRUwMKX6k3CCa3mqGLRotnG9OWVSt6Z8L2ZUpxPHB/exec";
 
   async function loadData() {
     currentMonth = document.getElementById('monthSelect').value;
     if (!currentMonth) return;
 
-    // 🟢 畫面優化：在 fetch 發送前，先讓表格顯示「讀取中」
     const tbody = document.querySelector("#dataTable tbody");
     const tfoot = document.querySelector("#dataTable tfoot");
     tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:30px; color:#3498db; font-weight:bold;">🔄 正在讀取資料...</td></tr>`;
