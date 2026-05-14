@@ -4,82 +4,163 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>每月零件紀錄</title>
+
+  <link rel="apple-touch-icon" href="icon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="icon.png">
+  
   <style>
     :root {
       --primary-color: #e0e4e8; 
       --text-color: #2c3e50;
       --accent-color: #3498db;
+      --success-color: #2ecc71;
     }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       background: #f4f6f9;
-      padding: 10px;
+      padding: 15px;
       margin: 0;
+      -webkit-font-smoothing: antialiased;
     }
-    h1 { text-align: center; font-size: 22px; margin: 15px 0; color: var(--text-color); }
-    
+    h1 {
+      text-align: center;
+      color: var(--text-color);
+      font-size: 22px;
+      margin: 15px 0;
+    }
     .controls {
-      display: flex; gap: 8px; justify-content: center; margin-bottom: 15px;
+      display: flex;
+      flex-wrap: nowrap; 
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 15px;
+      overflow-x: auto; 
+      padding-bottom: 5px;
     }
-    .controls input, .controls button {
-      padding: 10px; font-size: 15px; border-radius: 8px; border: 1px solid #ccc;
+    .controls input[type="month"], .controls button {
+      padding: 10px 14px;
+      font-size: 15px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+      white-space: nowrap; 
     }
-
+    .controls button {
+      background: var(--primary-color);
+      color: var(--text-color); 
+      font-weight: normal;
+      cursor: pointer;
+      -webkit-appearance: none;
+    }
+    .controls button:active {
+      background: #d0d4d8;
+    }
     .table-container {
-      width: 100%; background: white; border-radius: 8px; overflow: hidden;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      width: 100%;
+      overflow-x: auto;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+      -webkit-overflow-scrolling: touch;
     }
     table {
-      width: 100%; border-collapse: collapse; table-layout: fixed;
+      width: 100%;
+      min-width: 750px; 
+      border-collapse: collapse;
+      table-layout: fixed; /* 固定佈局，讓我們能精準控制各欄寬度 */
     }
-    th { background: #34495e; color: white; padding: 12px 5px; font-size: 14px; }
-    td { border-bottom: 1px solid #eee; padding: 8px 5px; }
-
-    /* --- 核心欄位寬度設定 --- */
-    .col-date { width: 65px; }
-    .col-name { width: auto; } /* 貨名自動伸展 */
-    .col-price { width: 60px; }
-    .col-qty { width: 50px; }   /* 數量寬度足夠顯示 3 位數 */
-    .col-cost { width: 60px; }  /* 成本寬度 */
-    .col-profit { width: 70px; }
     
-    /* 電腦版才顯示的欄位 */
-    .col-total, .col-hkd, .col-action { width: 80px; }
+    /* 🛠️ 精準控制每欄寬度比例 */
+    th:nth-child(1) { width: 75px; }  /* 日期 */
+    th:nth-child(2) { width: auto; }  /* 貨名：自動伸展，留到最闊 */
+    th:nth-child(3) { width: 75px; }  /* 價錢 */
+    th:nth-child(4) { width: 55px; }  /* 數量：縮窄，不預留多闊 */
+    th:nth-child(5) { width: 80px; }  /* 總數 */
+    th:nth-child(6) { width: 65px; }  /* 成本：縮窄，不預留多闊 */
+    th:nth-child(7) { width: 80px; }  /* 港幣 */
+    th:nth-child(8) { width: 80px; }  /* 賺取 */
+    th:nth-child(9) { width: 65px; }  /* 操作 */
+
+    th {
+      background: #34495e; 
+      color: white;
+      padding: 12px 4px;
+      font-size: 14px;
+    }
+    td {
+      padding: 10px 4px;
+      border-bottom: 1px solid #eee;
+      text-align: right;
+    }
+    
+    /* 貨名欄位靠左對齊，方便閱讀 */
+    th:nth-child(2) { text-align: left; padding-left: 8px; }
+    td:nth-child(2) { text-align: left; padding-left: 8px; }
 
     input[type="text"], input[type="number"] {
-      width: 100%; border: 1px solid transparent; background: transparent;
-      font-size: 16px; /* iPhone 標準字體，不縮小 */
-      padding: 5px 0;
+      width: 100%;
+      border: 1px solid transparent;
+      background: transparent;
+      text-align: right;
+      font-size: 16px; 
+      padding: 6px 4px;
       box-sizing: border-box;
+      border-radius: 4px;
     }
-    input[type="number"] { text-align: right; }
-    input:focus { background: #fffacd; border-bottom-color: var(--accent-color); outline: none; }
-
-    .profit-val { color: #27ae60; font-weight: bold; text-align: right; font-size: 14px; }
-    .total-row { background: #eaeded; font-weight: bold; }
-
-    /* 📱 手機版專屬優化 (iPhone) */
-    @media screen and (max-width: 600px) {
-      /* 隱藏次要資訊，騰出空間給貨名和數量 */
-      .hide-mobile { display: none; }
-      
-      th, td { font-size: 14px; padding: 10px 4px; }
-      
-      .col-date { width: 55px; }
-      .col-qty { width: 45px; }
-      .col-price, .col-cost { width: 55px; }
-      
-      /* 讓貨名可以換行顯示，不會被截斷 */
-      td.col-name { 
-        white-space: normal; 
-        word-break: break-all; 
-        line-height: 1.2;
-      }
+    
+    /* 貨名輸入框文字靠左 */
+    td:nth-child(2) input[type="text"] {
+      text-align: left;
     }
 
+    input:focus {
+      background: #fffacd;
+      border-color: var(--accent-color);
+      outline: none;
+    }
+    .calculated {
+      background: #f8fbfd;
+      font-weight: bold;
+      color: #34495e;
+    }
+    .profit {
+      background: #ebfbf2;
+      color: #27ae60;
+      font-weight: bold;
+    }
+    .total-row {
+      background: #eaeded;
+      font-weight: bold;
+    }
+    .total-row td {
+      border-top: 2px solid #34495e;
+      border-bottom: 2px double #34495e;
+      color: #1b2631;
+    }
+    .total-row .total-profit {
+      background: #fff9c4 !important;
+      color: #b7950b;
+    }
+    .delete-btn {
+      background: #e74c3c;
+      color: white;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 4px;
+      font-size: 13px;
+      cursor: pointer;
+    }
     .saving-status {
-      position: fixed; bottom: 15px; right: 15px; background: rgba(0,0,0,0.7);
-      color: white; padding: 8px 15px; border-radius: 20px; display: none;
+      position: fixed;
+      bottom: 15px;
+      right: 15px;
+      background: rgba(0,0,0,0.7);
+      color: white;
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-size: 13px;
+      display: none;
+      z-index: 999;
     }
   </style>
 </head>
@@ -89,22 +170,16 @@
   
   <div class="controls">
     <input type="month" id="monthSelect" onchange="loadData()">
-    <button onclick="addRow()">➕ 新增</button>
+    <button onclick="addRow()">➕ 新增項目</button>
+    <button onclick="openSheet()">📊 開啟 Google Sheet</button>
   </div>
 
   <div class="table-container">
     <table id="dataTable">
       <thead>
         <tr>
-          <th class="col-date">日期</th>
-          <th class="col-name">貨名</th>
-          <th class="col-price">價錢</th>
-          <th class="col-qty">數量</th>
-          <th class="col-total hide-mobile">總數</th>
-          <th class="col-cost">成本</th>
-          <th class="col-hkd hide-mobile">港幣</th>
-          <th class="col-profit">賺取</th>
-          <th class="col-action hide-mobile">操作</th>
+          <th>日期</th><th>貨名</th><th>價錢</th><th>數量</th><th>總數</th>
+          <th>成本</th><th>港幣</th><th>賺取</th><th>操作</th>
         </tr>
       </thead>
       <tbody></tbody>
@@ -112,82 +187,147 @@
     </table>
   </div>
 
-  <div id="savingStatus" class="saving-status">💾 儲存中...</div>
+  <div id="savingStatus" class="saving-status">💾 自動儲存中...</div>
 
 <script>
   let currentMonth = '';
   let localDataCached = []; 
+  // 🔴 請確保此處換回您的真實後端網址
   const webAppUrl = "https://script.google.com/macros/s/AKfycbz5q4zQLBg16QKrbBU1q7I5QwVyRUwMKX6k3CCa3mqGLRotnG9OWVSt6Z8L2ZUpxPHB/exec";
 
   async function loadData() {
     currentMonth = document.getElementById('monthSelect').value;
     if (!currentMonth) return;
+
+    // 🟢 畫面優化：在 fetch 發送前，先讓表格顯示「讀取中」
     const tbody = document.querySelector("#dataTable tbody");
-    tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:20px;">載入中...</td></tr>`;
+    const tfoot = document.querySelector("#dataTable tfoot");
+    tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:30px; color:#3498db; font-weight:bold;">🔄 正在讀取資料...</td></tr>`;
+    tfoot.innerHTML = "";
+
     try {
       const res = await fetch(webAppUrl + "?month=" + currentMonth);
       const result = await res.json();
-      if (result.success) {
+      
+      if (result.success && Array.isArray(result.data)) {
         localDataCached = result.data;
         renderInterface();
       }
-    } catch (e) { alert("讀取失敗"); }
+    } catch (error) {
+      console.error("讀取失敗:", error);
+    }
   }
 
   function renderInterface() {
     const tbody = document.querySelector("#dataTable tbody");
     const tfoot = document.querySelector("#dataTable tfoot");
-    tbody.innerHTML = ""; tfoot.innerHTML = "";
-    let ts=0, th=0, tp=0;
+    tbody.innerHTML = "";
+    tfoot.innerHTML = "";
+
+    let totalSum = 0;
+    let totalHkd = 0;
+    let totalProfit = 0;
 
     localDataCached.forEach((item, index) => {
-      const p = Number(item.price)||0, q = Number(item.qty)||0, c = Number(item.cost)||0;
-      const total = p * q, hkd = q * c, profit = total - hkd;
-      ts+=total; th+=hkd; tp+=profit;
+      const price = Number(item.price) || 0;
+      const qty = Number(item.qty) || 0;
+      const cost = Number(item.cost) || 0;
+
+      const total = price * qty;
+      const hkd = qty * cost;
+      const profit = total - hkd;
+
+      totalSum += total;
+      totalHkd += hkd;
+      totalProfit += profit;
 
       const tr = document.createElement("tr");
       tr.innerHTML = `
-        <td class="col-date"><input type="text" value="${item.date||''}" onchange="updateField(${index},'date',this.value)"></td>
-        <td class="col-name"><input type="text" value="${item.name||''}" style="text-align:left" onchange="updateField(${index},'name',this.value)"></td>
-        <td class="col-price"><input type="number" value="${p}" onchange="updateField(${index},'price',this.value)"></td>
-        <td class="col-qty"><input type="number" value="${q}" onchange="updateField(${index},'qty',this.value)"></td>
-        <td class="hide-mobile">¥${total}</td>
-        <td class="col-cost"><input type="number" value="${c}" onchange="updateField(${index},'cost',this.value)"></td>
-        <td class="hide-mobile">$${hkd}</td>
-        <td class="profit-val">$${profit}</td>
-        <td class="hide-mobile"><button onclick="deleteRecord(${item.row})">刪除</button></td>
+        <td><input type="text" value="${item.date || ''}" onchange="updateField(${index}, 'date', this.value)"></td>
+        <td><input type="text" value="${item.name || ''}" onchange="updateField(${index}, 'name', this.value)"></td>
+        <td><input type="number" value="${price}" onchange="updateField(${index}, 'price', this.value)"></td>
+        <td><input type="number" value="${qty}" onchange="updateField(${index}, 'qty', this.value)"></td>
+        <td class="calculated">¥${total}</td>
+        <td><input type="number" value="${cost}" onchange="updateField(${index}, 'cost', this.value)"></td>
+        <td class="calculated">$${hkd}</td>
+        <td class="calculated profit">$${profit}</td>
+        <td style="text-align:center;"><button class="delete-btn" onclick="deleteRecord(${item.row})">刪除</button></td>
       `;
       tbody.appendChild(tr);
     });
 
-    if(localDataCached.length > 0) {
-      const tf = document.createElement("tr");
-      tf.className = "total-row";
-      tf.innerHTML = `<td colspan="2" style="text-align:center">總計</td><td class="hide-mobile"></td><td class="hide-mobile"></td><td>¥${ts}</td><td class="hide-mobile"></td><td class="hide-mobile"></td><td style="color:#b7950b">$${tp}</td><td class="hide-mobile"></td>`;
-      tfoot.appendChild(tf);
+    if (localDataCached.length > 0) {
+      const totalTr = document.createElement("tr");
+      totalTr.className = "total-row";
+      totalTr.innerHTML = `
+        <td style="text-align:center;">總計</td>
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
+        <td>¥${totalSum}</td>
+        <td>-</td>
+        <td>$${totalHkd}</td>
+        <td class="total-profit">$${totalProfit}</td>
+        <td></td>
+      `;
+      tfoot.appendChild(totalTr);
+    } else {
+      tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:30px; color:#7f8c8d;">📅 本月尚無進銷存資料</td></tr>`;
     }
   }
 
-  function updateField(idx, f, v) {
-    localDataCached[idx][f] = v;
+  function updateField(dataIndex, field, value) {
+    const item = localDataCached[dataIndex];
+    item[field] = value; 
+
     renderInterface();
-    document.getElementById("savingStatus").style.display = "block";
-    fetch(`${webAppUrl}?action=update&row=${localDataCached[idx].row}&field=${f}&value=${encodeURIComponent(v)}`, {method:'POST', mode:'no-cors'})
-    .then(() => setTimeout(()=>document.getElementById("savingStatus").style.display="none", 500));
+
+    const statusEl = document.getElementById("savingStatus");
+    statusEl.style.display = "block";
+
+    fetch(webAppUrl + "?action=update&row=" + item.row + "&field=" + field + "&value=" + encodeURIComponent(value), {
+      method: 'POST',
+      mode: 'no-cors'
+    })
+    .then(() => {
+      setTimeout(() => { statusEl.style.display = "none"; }, 800);
+    })
+    .catch(err => {
+      console.error("同步失敗:", err);
+      statusEl.innerText = "❌ 儲存失敗";
+    });
   }
 
   function addRow() {
-    const name = prompt("貨名");
-    if (name) {
-      fetch(webAppUrl, {
-        method: 'POST', mode: 'no-cors',
-        body: JSON.stringify({date: 'May-26', name, price:0, qty:0, cost:0, month: currentMonth})
-      }).then(() => loadData());
+    const date = prompt("請輸入日期 (例如 May-26)", "May-26");
+    const name = prompt("請輸入貨名");
+    const price = parseFloat(prompt("價錢"));
+    const qty = parseFloat(prompt("數量"));
+    const cost = parseFloat(prompt("成本"));
+
+    if (name && price && qty && cost) {
+        fetch(webAppUrl, {
+            method: 'POST',
+            mode: 'no-cors',
+            body: JSON.stringify({date, name, price, qty, cost, month: currentMonth}),
+            headers: { "Content-Type": "text/plain" }
+        })
+        .then(() => {
+            loadData();
+        })
+        .catch(err => alert("儲存失敗：" + err));
     }
   }
 
   function deleteRecord(row) {
-    if (confirm("刪除？")) fetch(webAppUrl + "?action=delete&row=" + row, {method: 'POST'}).then(() => loadData());
+    if (confirm("確定要刪除這筆資料嗎？")) {
+      fetch(webAppUrl + "?action=delete&row=" + row, {method: 'POST'})
+        .then(() => loadData());
+    }
+  }
+
+  function openSheet() {
+    window.open('https://docs.google.com/spreadsheets/d/1yApB5X49TBWWXnYQmVJVCgHGW8cpax43U43rCGgkBHg/edit?pli=1&gid=0#gid=0', '_blank');
   }
 
   window.onload = () => {
