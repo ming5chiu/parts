@@ -467,3 +467,26 @@
         .catch(err => alert("儲存失敗：" + err));
       } else {
         alert("請完整輸入資料");
+      }
+    }
+
+    function deleteRecord(row) {
+      if (confirm("確定要刪除這筆資料嗎？")) {
+        fetch(webAppUrl + "?action=delete&row=" + row, { method: 'POST' })
+          .then(() => loadData());
+      }
+    }
+
+    function openSheet() {
+      window.open('https://docs.google.com/spreadsheets/d/1yApB5X49TBWWXnYQmVJVCgHGW8cpax43U43rCGgkBHg/edit?pli=1&gid=0#gid=0', '_blank');
+    }
+
+    window.onload = () => {
+      const today = new Date();
+      currentMonth = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0');
+      document.getElementById('monthSelect').value = currentMonth;
+      loadData();
+    };
+  </script>
+</body>
+</html>
