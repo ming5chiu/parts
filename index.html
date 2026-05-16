@@ -5,43 +5,52 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="theme-color" content="#f2f2f7" />
   <title>每月零件紀錄</title>
   <link rel="apple-touch-icon" href="icon.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="icon.png" />
-
   <style>
     :root {
-      --bg: #f5f7fb;
-      --card: #ffffff;
-      --text: #1f2d3d;
-      --muted: #6b7c93;
-      --line: #e6ebf2;
-      --accent: #2d8cff;
-      --good: #1f9d55;
-      --shadow: 0 6px 18px rgba(0,0,0,.06);
+      --bg: #f2f2f7;
+      --card: rgba(255, 255, 255, 0.82);
+      --card-solid: #ffffff;
+      --text: #1c1c1e;
+      --muted: #6c6c70;
+      --line: rgba(60, 60, 67, 0.12);
+      --accent: #007aff;
+      --good: #34c759;
+      --danger: #ff3b30;
+      --shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
       --topbar-h: 118px;
       --safe-top: env(safe-area-inset-top, 0px);
     }
 
     * {
       box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
     }
 
+    html,
     body {
       margin: 0;
-      padding: calc(var(--topbar-h) + var(--safe-top) + 12px) 12px 12px;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      padding: 0;
       background: var(--bg);
       color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       -webkit-font-smoothing: antialiased;
       -webkit-text-size-adjust: 100%;
     }
 
+    body {
+      padding: calc(var(--topbar-h) + var(--safe-top) + 12px) 10px 12px;
+    }
+
     h1 {
-      margin: 6px 0 12px;
+      margin: 0 0 10px;
       text-align: center;
-      font-size: 22px;
+      font-size: 20px;
       font-weight: 700;
+      letter-spacing: -0.2px;
     }
 
     .topbar {
@@ -50,17 +59,17 @@
       right: 0;
       top: var(--safe-top);
       z-index: 1000;
-      padding: 10px 12px 8px;
-      background: rgba(245, 247, 251, 0.96);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
+      padding: 8px 10px 10px;
+      background: rgba(242, 242, 247, 0.88);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
       border-bottom: 1px solid var(--line);
     }
 
     .summary {
-      background: linear-gradient(180deg, #fff, #f8fbff);
+      background: var(--card);
       border: 1px solid var(--line);
-      border-radius: 16px;
+      border-radius: 18px;
       box-shadow: var(--shadow);
       padding: 10px;
     }
@@ -70,7 +79,7 @@
       font-weight: 700;
       color: var(--muted);
       margin-bottom: 8px;
-      line-height: 1;
+      letter-spacing: 0.2px;
     }
 
     .summary-grid {
@@ -80,30 +89,40 @@
     }
 
     .summary-item {
-      background: #f7f9fc;
-      border: 1px solid #e7edf4;
+      background: #f7f7fb;
+      border: 1px solid rgba(60, 60, 67, 0.08);
       border-radius: 14px;
       padding: 8px 10px;
-      min-height: 60px;
+      min-height: 56px;
       display: flex;
       flex-direction: column;
       justify-content: center;
     }
 
     .summary-item span {
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 600;
       color: var(--muted);
-      margin-bottom: 4px;
+      margin-bottom: 3px;
       line-height: 1;
     }
 
     .summary-item strong {
       font-size: 18px;
-      line-height: 1.1;
+      line-height: 1;
+      letter-spacing: -0.2px;
+      font-weight: 700;
     }
 
-    .profit strong {
+    .summary-item.total strong {
+      color: var(--accent);
+    }
+
+    .summary-item.hkd strong {
+      color: #ff9500;
+    }
+
+    .summary-item.profit strong {
       color: var(--good);
     }
 
@@ -117,14 +136,20 @@
     .controls input[type="month"],
     .controls button {
       width: 100%;
-      min-height: 44px;
-      border-radius: 12px;
-      border: 1px solid #d6dde7;
+      min-height: 46px;
+      border-radius: 14px;
+      border: 1px solid rgba(60, 60, 67, 0.14);
       font-size: 16px;
       padding: 10px 14px;
-      background: #fff;
+      background: var(--card-solid);
       color: var(--text);
       -webkit-appearance: none;
+      appearance: none;
+      box-shadow: 0 1px 0 rgba(255, 255, 255, 0.8) inset;
+    }
+
+    .controls input[type="month"] {
+      color-scheme: light;
     }
 
     .action-row {
@@ -135,20 +160,23 @@
     .action-row button {
       flex: 1;
       font-weight: 600;
-      background: #eef3f8;
+      background: rgba(0, 122, 255, 0.08);
+      color: var(--accent);
+      border-color: rgba(0, 122, 255, 0.14);
     }
 
-    .action-row button:active {
-      background: #dfe8f2;
+    .action-row button:active,
+    .controls button:active {
+      transform: scale(0.99);
+      opacity: 0.92;
     }
 
     .table-wrap {
       width: 100%;
       overflow-x: auto;
-      background: var(--card);
-      border-radius: 14px;
-      border: 1px solid var(--line);
-      box-shadow: var(--shadow);
+      background: transparent;
+      border-radius: 0;
+      box-shadow: none;
       -webkit-overflow-scrolling: touch;
     }
 
@@ -157,24 +185,36 @@
       min-width: 780px;
       border-collapse: collapse;
       table-layout: fixed;
+      background: var(--card-solid);
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
     }
 
-    th {
-      background: #2f4156;
-      color: #fff;
-      padding: 12px 6px;
-      font-size: 14px;
+    thead th {
+      background: #f7f7fb;
+      color: var(--muted);
+      padding: 12px 8px;
+      font-size: 13px;
+      font-weight: 700;
       position: sticky;
       top: 0;
       z-index: 1;
+      border-bottom: 1px solid var(--line);
     }
 
     td {
-      padding: 10px 6px;
-      border-bottom: 1px solid #edf1f5;
+      padding: 10px 8px;
+      border-bottom: 1px solid var(--line);
       font-size: 15px;
       text-align: right;
       vertical-align: middle;
+      background: #fff;
+    }
+
+    tbody tr:last-child td {
+      border-bottom: none;
     }
 
     th:nth-child(2),
@@ -188,216 +228,234 @@
       width: 100%;
       border: 1px solid transparent;
       background: transparent;
-      border-radius: 8px;
-      padding: 8px 6px;
+      border-radius: 10px;
+      padding: 8px 8px;
       font-size: 16px;
       color: var(--text);
       text-align: right;
+      outline: none;
     }
 
     td:nth-child(2) input[type="text"] {
       text-align: left;
     }
 
-    input:focus {
-      outline: none;
-      border-color: var(--accent);
-      background: #fffdf0;
+    input[type="text"]:focus,
+    input[type="number"]:focus {
+      background: #f2f8ff;
+      border-color: rgba(0, 122, 255, 0.22);
+      box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.08);
     }
 
     .calculated {
-      background: #f8fbfd;
+      background: #fcfcfd;
       font-weight: 700;
     }
 
     .profit-cell {
-      background: #ebfbf2;
       color: var(--good);
       font-weight: 700;
     }
 
     .delete-btn {
-      background: #e74c3c;
-      color: #fff;
-      border: none;
-      padding: 8px 12px;
-      border-radius: 8px;
+      background: rgba(255, 59, 48, 0.1);
+      color: var(--danger);
+      border: 1px solid rgba(255, 59, 48, 0.14);
+      padding: 7px 11px;
+      border-radius: 10px;
       font-size: 14px;
+      font-weight: 600;
     }
 
     .saving-status {
       position: fixed;
       left: 50%;
       transform: translateX(-50%);
-      bottom: 12px;
-      background: rgba(0,0,0,.75);
+      bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+      background: rgba(28, 28, 30, 0.9);
       color: #fff;
       padding: 8px 14px;
       border-radius: 999px;
       font-size: 13px;
       display: none;
       z-index: 999;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
     }
 
     .empty-row {
       text-align: center;
       padding: 24px !important;
-      color: #7f8c8d;
+      color: var(--muted);
     }
 
     @media (max-width: 820px) {
-  :root {
-    --topbar-h: 108px;
-  }
+      :root {
+        --topbar-h: 108px;
+      }
 
-  body {
-    padding-left: 8px;
-    padding-right: 8px;
-    padding-bottom: 8px;
-  }
+      body {
+        padding-left: 8px;
+        padding-right: 8px;
+        padding-bottom: 10px;
+      }
 
-  h1 {
-    font-size: 17px;
-    margin: 2px 0 8px;
-  }
+      h1 {
+        font-size: 17px;
+        margin: 0 0 8px;
+      }
 
-  .controls {
-    gap: 6px;
-    margin-bottom: 8px;
-  }
+      .topbar {
+        padding: 7px 8px 9px;
+      }
 
-  .controls input[type="month"],
-  .controls button {
-    min-height: 40px;
-    font-size: 14px;
-    padding: 8px 10px;
-    border-radius: 10px;
-  }
+      .summary {
+        padding: 8px;
+        border-radius: 16px;
+      }
 
-  .action-row {
-    gap: 6px;
-  }
+      .summary-title {
+        font-size: 11px;
+        margin-bottom: 6px;
+      }
 
-  .table-wrap {
-    overflow: visible;
-    border: none;
-    background: transparent;
-    box-shadow: none;
-    margin-top: 6px;
-  }
+      .summary-grid {
+        gap: 6px;
+      }
 
-  table {
-    min-width: 0;
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0 6px;
-  }
+      .summary-item {
+        min-height: 50px;
+        padding: 7px 8px;
+        border-radius: 12px;
+      }
 
-  thead {
-    display: none;
-  }
+      .summary-item span {
+        font-size: 10px;
+        margin-bottom: 2px;
+      }
 
-  tbody,
-  tr,
-  td {
-    display: block;
-    width: 100%;
-  }
+      .summary-item strong {
+        font-size: 15px;
+      }
 
-  tr {
-    margin-bottom: 0;
-    background: #fff;
-    border: 1px solid var(--line);
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 3px 8px rgba(0,0,0,.04);
-  }
+      .controls {
+        gap: 7px;
+        margin-bottom: 8px;
+      }
 
-  td {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 6px;
-    padding: 5px 8px;
-    border-bottom: 1px solid #eef2f6;
-    text-align: left;
-    font-size: 12px;
-    line-height: 1.05;
-  }
+      .controls input[type="month"],
+      .controls button {
+        min-height: 40px;
+        font-size: 14px;
+        padding: 8px 10px;
+        border-radius: 12px;
+      }
 
-  td:last-child {
-    border-bottom: none;
-  }
+      .action-row {
+        gap: 8px;
+      }
 
-  td::before {
-    content: attr(data-label);
-    font-weight: 700;
-    color: #536171;
-    min-width: 46px;
-    flex: 0 0 46px;
-    font-size: 11px;
-  }
+      .table-wrap {
+        overflow: visible;
+      }
 
-  td input[type="text"],
-  td input[type="number"] {
-    flex: 1;
-    min-width: 0;
-    width: 100%;
-    background: #f9fbfd;
-    border: 1px solid #dbe3ea;
-    border-radius: 8px;
-    padding: 5px 7px;
-    font-size: 13px;
-    line-height: 1.1;
-  }
+      table {
+        min-width: 0;
+        width: 100%;
+        border: none;
+        box-shadow: none;
+        background: transparent;
+      }
 
-  td:nth-child(2) input[type="text"] {
-    font-size: 13px;
-  }
+      thead {
+        display: none;
+      }
 
-  .calculated,
-  .profit-cell {
-    background: transparent;
-    font-weight: 700;
-  }
+      tbody,
+      tr,
+      td {
+        display: block;
+        width: 100%;
+      }
 
-  .profit-cell {
-    color: var(--good);
-  }
+      tr {
+        margin-bottom: 8px;
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.04);
+      }
 
-  .delete-btn {
-    padding: 6px 10px;
-    font-size: 12px;
-    border-radius: 8px;
-  }
-}
-      /* 令 iPhone 一屏見到更多行：再壓細少少 */
-      td:nth-child(1),
-      td:nth-child(2),
-      td:nth-child(3),
-      td:nth-child(4),
-      td:nth-child(5),
-      td:nth-child(6),
-      td:nth-child(7),
-      td:nth-child(8),
-      td:nth-child(9) {
-        padding-top: 6px;
-        padding-bottom: 6px;
+      td {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        padding: 6px 10px;
+        border-bottom: 1px solid rgba(60, 60, 67, 0.08);
+        text-align: left;
+        font-size: 12px;
+        line-height: 1.05;
+        background: #fff;
+      }
+
+      td:last-child {
+        border-bottom: none;
+      }
+
+      td::before {
+        content: attr(data-label);
+        font-weight: 700;
+        color: var(--muted);
+        min-width: 52px;
+        flex: 0 0 52px;
+        font-size: 11px;
+      }
+
+      td input[type="text"],
+      td input[type="number"] {
+        flex: 1;
+        min-width: 0;
+        width: 100%;
+        background: #f7f7fb;
+        border: 1px solid rgba(60, 60, 67, 0.12);
+        border-radius: 9px;
+        padding: 5px 7px;
+        font-size: 13px;
+        line-height: 1.1;
+      }
+
+      td:nth-child(2) input[type="text"] {
+        font-size: 13px;
+      }
+
+      .calculated,
+      .profit-cell {
+        background: transparent;
+      }
+
+      .profit-cell {
+        color: var(--good);
+      }
+
+      .delete-btn {
+        padding: 6px 10px;
+        font-size: 12px;
+        border-radius: 9px;
       }
     }
   </style>
 </head>
-
 <body>
   <div class="topbar">
     <div class="summary">
       <div class="summary-title">本月總覽</div>
       <div class="summary-grid">
-        <div class="summary-item">
+        <div class="summary-item total">
           <span>人民幣</span>
           <strong id="summaryTotal">¥0</strong>
         </div>
-        <div class="summary-item">
+        <div class="summary-item hkd">
           <span>港幣</span>
           <strong id="summaryHkd">$0</strong>
         </div>
@@ -441,28 +499,27 @@
   <div id="savingStatus" class="saving-status">💾 自動儲存中...</div>
 
   <script>
-    let currentMonth = '';
+    let currentMonth = "";
     let localDataCached = [];
-
     const webAppUrl = "https://script.google.com/macros/s/AKfycbz5q4zQLBg16QKrbBU1q7I5QwVyRUwMKX6k3CCa3mqGLRotnG9OWVSt6Z8L2ZUpxPHB/exec";
 
     function escapeHtml(value) {
-      return String(value ?? '')
-        .replaceAll('&', '&amp;')
-        .replaceAll('<', '&lt;')
-        .replaceAll('>', '&gt;')
-        .replaceAll('"', '&quot;')
-        .replaceAll("'", '&#39;');
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#39;");
     }
 
     function updateSummary(totalSum, totalHkd, totalProfit) {
-      document.getElementById('summaryTotal').innerText = `¥${totalSum}`;
-      document.getElementById('summaryHkd').innerText = `$${totalHkd}`;
-      document.getElementById('summaryProfit').innerText = `$${totalProfit}`;
+      document.getElementById("summaryTotal").innerText = `¥${totalSum}`;
+      document.getElementById("summaryHkd").innerText = `$${totalHkd}`;
+      document.getElementById("summaryProfit").innerText = `$${totalProfit}`;
     }
 
     async function loadData() {
-      currentMonth = document.getElementById('monthSelect').value;
+      currentMonth = document.getElementById("monthSelect").value;
       if (!currentMonth) return;
 
       const tbody = document.querySelector("#dataTable tbody");
@@ -504,8 +561,8 @@
       }
 
       localDataCached.forEach((item, index) => {
-        const date = escapeHtml(item.date || '');
-        const name = escapeHtml(item.name || '');
+        const date = escapeHtml(item.date || "");
+        const name = escapeHtml(item.name || "");
         const price = Number(item.price) || 0;
         const qty = Number(item.qty) || 0;
         const cost = Number(item.cost) || 0;
@@ -547,18 +604,18 @@
       statusEl.style.display = "block";
 
       fetch(webAppUrl + "?action=update&row=" + item.row + "&field=" + field + "&value=" + encodeURIComponent(value), {
-        method: 'POST',
-        mode: 'no-cors'
+        method: "POST",
+        mode: "no-cors"
       })
-      .then(() => {
-        setTimeout(() => {
-          statusEl.style.display = "none";
-        }, 800);
-      })
-      .catch(err => {
-        console.error("同步失敗:", err);
-        statusEl.innerText = "❌ 儲存失敗";
-      });
+        .then(() => {
+          setTimeout(() => {
+            statusEl.style.display = "none";
+          }, 800);
+        })
+        .catch(err => {
+          console.error("同步失敗:", err);
+          statusEl.innerText = "❌ 儲存失敗";
+        });
     }
 
     function addRow() {
@@ -570,13 +627,13 @@
 
       if (date && name && !isNaN(price) && !isNaN(qty) && !isNaN(cost)) {
         fetch(webAppUrl, {
-          method: 'POST',
-          mode: 'no-cors',
+          method: "POST",
+          mode: "no-cors",
           body: JSON.stringify({ date, name, price, qty, cost, month: currentMonth }),
           headers: { "Content-Type": "text/plain" }
         })
-        .then(() => loadData())
-        .catch(err => alert("儲存失敗：" + err));
+          .then(() => loadData())
+          .catch(err => alert("儲存失敗：" + err));
       } else {
         alert("請完整輸入資料");
       }
@@ -584,19 +641,19 @@
 
     function deleteRecord(row) {
       if (confirm("確定要刪除這筆資料嗎？")) {
-        fetch(webAppUrl + "?action=delete&row=" + row, { method: 'POST' })
+        fetch(webAppUrl + "?action=delete&row=" + row, { method: "POST" })
           .then(() => loadData());
       }
     }
 
     function openSheet() {
-      window.open('https://docs.google.com/spreadsheets/d/1yApB5X49TBWWXnYQmVJVCgHGW8cpax43U43rCGgkBHg/edit?pli=1&gid=0#gid=0', '_blank');
+      window.open("https://docs.google.com/spreadsheets/d/1yApB5X49TBWWXnYQmVJVCgHGW8cpax43U43rCGgkBHg/edit?pli=1&gid=0#gid=0", "_blank");
     }
 
     window.onload = () => {
       const today = new Date();
-      currentMonth = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0');
-      document.getElementById('monthSelect').value = currentMonth;
+      currentMonth = today.getFullYear() + "-" + String(today.getMonth() + 1).padStart(2, "0");
+      document.getElementById("monthSelect").value = currentMonth;
       loadData();
     };
   </script>
