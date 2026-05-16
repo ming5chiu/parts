@@ -18,6 +18,7 @@
       --card-bg: #ffffff;
       --page-bg: #f5f7fb;
       --border-color: #e6ebf2;
+      --shadow: 0 6px 18px rgba(0,0,0,0.06);
     }
 
     * {
@@ -59,7 +60,6 @@
       font-size: 16px;
       border-radius: 12px;
       border: 1px solid #ccd6e0;
-      box-sizing: border-box;
       white-space: nowrap;
     }
 
@@ -76,12 +76,66 @@
       background: #dbe3ec;
     }
 
+    .summary-card {
+      position: sticky;
+      top: 10px;
+      z-index: 20;
+      background: linear-gradient(180deg, #ffffff, #f8fbff);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+
+    .summary-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #6b7c93;
+      margin-bottom: 10px;
+      letter-spacing: 0.3px;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .summary-item {
+      background: #f7f9fc;
+      border: 1px solid #e7edf4;
+      border-radius: 14px;
+      padding: 10px 12px;
+      min-height: 72px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .summary-item span {
+      font-size: 13px;
+      color: #6b7c93;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+
+    .summary-item strong {
+      font-size: 20px;
+      line-height: 1.1;
+      color: var(--text-color);
+    }
+
+    .summary-profit strong {
+      color: #1f9d55;
+    }
+
     .table-container {
       width: 100%;
       overflow-x: auto;
       background: var(--card-bg);
       border-radius: 14px;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+      box-shadow: var(--shadow);
       -webkit-overflow-scrolling: touch;
       border: 1px solid var(--border-color);
     }
@@ -133,7 +187,6 @@
       text-align: right;
       font-size: 16px;
       padding: 8px 6px;
-      box-sizing: border-box;
       border-radius: 8px;
       color: var(--text-color);
     }
@@ -160,22 +213,6 @@
       font-weight: 700;
     }
 
-    .total-row {
-      background: #f2f4f7;
-      font-weight: 700;
-    }
-
-    .total-row td {
-      border-top: 2px solid #2f4156;
-      border-bottom: 2px double #2f4156;
-      color: #1b2631;
-    }
-
-    .total-row .total-profit {
-      background: #fff9c4 !important;
-      color: #b7950b;
-    }
-
     .delete-btn {
       background: #e74c3c;
       color: white;
@@ -199,6 +236,12 @@
       z-index: 999;
     }
 
+    .empty-row {
+      text-align: center;
+      padding: 30px !important;
+      color: #7f8c8d;
+    }
+
     @media (max-width: 820px) {
       body {
         padding: 10px;
@@ -218,6 +261,24 @@
         width: 100%;
       }
 
+      .summary-card {
+        top: 8px;
+        padding: 10px;
+      }
+
+      .summary-grid {
+        gap: 8px;
+      }
+
+      .summary-item {
+        min-height: 66px;
+        padding: 9px 10px;
+      }
+
+      .summary-item strong {
+        font-size: 18px;
+      }
+
       .table-container {
         overflow: visible;
         box-shadow: none;
@@ -234,7 +295,7 @@
         display: none;
       }
 
-      tbody, tfoot, tr, td {
+      tbody, tr, td {
         display: block;
         width: 100%;
       }
@@ -291,16 +352,6 @@
         background: transparent;
       }
 
-      .total-row {
-        margin-top: 14px;
-        background: #f2f4f7;
-      }
-
-      .total-row td {
-        display: flex;
-        justify-content: space-between;
-      }
-
       .saving-status {
         left: 50%;
         right: auto;
@@ -320,6 +371,24 @@
     <button onclick="openSheet()">📊 開啟 Google Sheet</button>
   </div>
 
+  <div class="summary-card">
+    <div class="summary-title">本月總覽</div>
+    <div class="summary-grid">
+      <div class="summary-item">
+        <span>總數</span>
+        <strong id="summaryTotal">¥0</strong>
+      </div>
+      <div class="summary-item">
+        <span>港幣</span>
+        <strong id="summaryHkd">$0</strong>
+      </div>
+      <div class="summary-item summary-profit">
+        <span>賺取</span>
+        <strong id="summaryProfit">$0</strong>
+      </div>
+    </div>
+  </div>
+
   <div class="table-container">
     <table id="dataTable">
       <thead>
@@ -336,7 +405,6 @@
         </tr>
       </thead>
       <tbody></tbody>
-      <tfoot></tfoot>
     </table>
   </div>
 
@@ -357,15 +425,19 @@
         .replaceAll("'", '&#39;');
     }
 
+    function updateSummary(totalSum, totalHkd, totalProfit) {
+      document.getElementById('summaryTotal').innerText = `¥${totalSum}`;
+      document.getElementById('summaryHkd').innerText = `$${totalHkd}`;
+      document.getElementById('summaryProfit').innerText = `$${totalProfit}`;
+    }
+
     async function loadData() {
       currentMonth = document.getElementById('monthSelect').value;
       if (!currentMonth) return;
 
       const tbody = document.querySelector("#dataTable tbody");
-      const tfoot = document.querySelector("#dataTable tfoot");
-
-      tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:30px; color:#3498db; font-weight:bold;">🔄 正在讀取資料...</td></tr>`;
-      tfoot.innerHTML = "";
+      tbody.innerHTML = `<tr><td colspan="9" class="empty-row">🔄 正在讀取資料...</td></tr>`;
+      updateSummary(0, 0, 0);
 
       try {
         const res = await fetch(webAppUrl + "?month=" + currentMonth);
@@ -375,24 +447,31 @@
           localDataCached = result.data;
           renderInterface();
         } else {
-          tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:30px; color:#7f8c8d;">📅 本月無資料紀錄</td></tr>`;
+          localDataCached = [];
+          tbody.innerHTML = `<tr><td colspan="9" class="empty-row">📅 本月無資料紀錄</td></tr>`;
+          updateSummary(0, 0, 0);
         }
       } catch (error) {
         console.error("讀取失敗:", error);
-        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:30px; color:#e74c3c;">讀取失敗</td></tr>`;
+        localDataCached = [];
+        tbody.innerHTML = `<tr><td colspan="9" class="empty-row">讀取失敗</td></tr>`;
+        updateSummary(0, 0, 0);
       }
     }
 
     function renderInterface() {
       const tbody = document.querySelector("#dataTable tbody");
-      const tfoot = document.querySelector("#dataTable tfoot");
-
       tbody.innerHTML = "";
-      tfoot.innerHTML = "";
 
       let totalSum = 0;
       let totalHkd = 0;
       let totalProfit = 0;
+
+      if (!localDataCached.length) {
+        tbody.innerHTML = `<tr><td colspan="9" class="empty-row">📅 本月無資料紀錄</td></tr>`;
+        updateSummary(0, 0, 0);
+        return;
+      }
 
       localDataCached.forEach((item, index) => {
         const date = escapeHtml(item.date || '');
@@ -423,24 +502,7 @@
         tbody.appendChild(tr);
       });
 
-      if (localDataCached.length > 0) {
-        const totalTr = document.createElement("tr");
-        totalTr.className = "total-row";
-        totalTr.innerHTML = `
-          <td data-label="項目" style="text-align:center;">總計</td>
-          <td data-label="貨名">-</td>
-          <td data-label="價錢">-</td>
-          <td data-label="數量">-</td>
-          <td data-label="總數">¥${totalSum}</td>
-          <td data-label="成本">-</td>
-          <td data-label="港幣">$${totalHkd}</td>
-          <td data-label="賺取" class="total-profit">$${totalProfit}</td>
-          <td data-label="操作"></td>
-        `;
-        tfoot.appendChild(totalTr);
-      } else {
-        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:30px; color:#7f8c8d;">📅 本月無資料紀錄</td></tr>`;
-      }
+      updateSummary(totalSum, totalHkd, totalProfit);
     }
 
     function updateField(dataIndex, field, value) {
