@@ -12,20 +12,24 @@
   <style>
     :root {
       --bg: #f5f7fb;
-      --card: #fff;
+      --card: #ffffff;
       --text: #1f2d3d;
       --muted: #6b7c93;
       --line: #e6ebf2;
       --accent: #2d8cff;
       --good: #1f9d55;
       --shadow: 0 6px 18px rgba(0,0,0,.06);
+      --topbar-h: 118px;
+      --safe-top: env(safe-area-inset-top, 0px);
     }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     body {
       margin: 0;
-      padding: 12px;
+      padding: calc(var(--topbar-h) + var(--safe-top) + 12px) 12px 12px;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       background: var(--bg);
       color: var(--text);
@@ -40,6 +44,69 @@
       font-weight: 700;
     }
 
+    .topbar {
+      position: fixed;
+      left: 0;
+      right: 0;
+      top: var(--safe-top);
+      z-index: 1000;
+      padding: 10px 12px 8px;
+      background: rgba(245, 247, 251, 0.96);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .summary {
+      background: linear-gradient(180deg, #fff, #f8fbff);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      padding: 10px;
+    }
+
+    .summary-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      margin-bottom: 8px;
+      line-height: 1;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .summary-item {
+      background: #f7f9fc;
+      border: 1px solid #e7edf4;
+      border-radius: 14px;
+      padding: 8px 10px;
+      min-height: 60px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .summary-item span {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 4px;
+      line-height: 1;
+    }
+
+    .summary-item strong {
+      font-size: 18px;
+      line-height: 1.1;
+    }
+
+    .profit strong {
+      color: var(--good);
+    }
+
     .controls {
       display: flex;
       flex-direction: column;
@@ -50,11 +117,11 @@
     .controls input[type="month"],
     .controls button {
       width: 100%;
-      min-height: 46px;
+      min-height: 44px;
       border-radius: 12px;
       border: 1px solid #d6dde7;
       font-size: 16px;
-      padding: 11px 14px;
+      padding: 10px 14px;
       background: #fff;
       color: var(--text);
       -webkit-appearance: none;
@@ -74,53 +141,6 @@
     .action-row button:active {
       background: #dfe8f2;
     }
-
-    .summary {
-      background: linear-gradient(180deg, #fff, #f8fbff);
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      box-shadow: var(--shadow);
-      padding: 12px;
-      margin-bottom: 12px;
-    }
-
-    .summary-title {
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--muted);
-      margin-bottom: 10px;
-    }
-
-    .summary-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-    }
-
-    .summary-item {
-      background: #f7f9fc;
-      border: 1px solid #e7edf4;
-      border-radius: 14px;
-      padding: 10px 12px;
-      min-height: 70px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-
-    .summary-item span {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--muted);
-      margin-bottom: 6px;
-    }
-
-    .summary-item strong {
-      font-size: 20px;
-      line-height: 1.1;
-    }
-
-    .profit strong { color: var(--good); }
 
     .table-wrap {
       width: 100%;
@@ -154,6 +174,7 @@
       border-bottom: 1px solid #edf1f5;
       font-size: 15px;
       text-align: right;
+      vertical-align: middle;
     }
 
     th:nth-child(2),
@@ -162,7 +183,8 @@
       padding-left: 10px;
     }
 
-    input[type="text"], input[type="number"] {
+    input[type="text"],
+    input[type="number"] {
       width: 100%;
       border: 1px solid transparent;
       background: transparent;
@@ -173,7 +195,9 @@
       text-align: right;
     }
 
-    td:nth-child(2) input[type="text"] { text-align: left; }
+    td:nth-child(2) input[type="text"] {
+      text-align: left;
+    }
 
     input:focus {
       outline: none;
@@ -186,7 +210,7 @@
       font-weight: 700;
     }
 
-    .profit {
+    .profit-cell {
       background: #ebfbf2;
       color: var(--good);
       font-weight: 700;
@@ -217,17 +241,70 @@
 
     .empty-row {
       text-align: center;
-      padding: 30px !important;
+      padding: 24px !important;
       color: #7f8c8d;
     }
 
     @media (max-width: 820px) {
-      body { padding: 10px; }
-      h1 { font-size: 20px; }
+      :root {
+        --topbar-h: 112px;
+      }
 
-      .summary-grid { gap: 8px; }
-      .summary-item { min-height: 64px; padding: 9px 10px; }
-      .summary-item strong { font-size: 18px; }
+      body {
+        padding-left: 10px;
+        padding-right: 10px;
+        padding-bottom: 10px;
+      }
+
+      h1 {
+        font-size: 18px;
+        margin: 2px 0 10px;
+      }
+
+      .topbar {
+        padding: 8px 10px 6px;
+      }
+
+      .summary {
+        padding: 8px;
+        border-radius: 14px;
+      }
+
+      .summary-title {
+        margin-bottom: 6px;
+      }
+
+      .summary-grid {
+        gap: 6px;
+      }
+
+      .summary-item {
+        min-height: 54px;
+        padding: 7px 8px;
+        border-radius: 12px;
+      }
+
+      .summary-item span {
+        font-size: 11px;
+        margin-bottom: 3px;
+      }
+
+      .summary-item strong {
+        font-size: 16px;
+      }
+
+      .controls {
+        gap: 8px;
+        margin-bottom: 10px;
+      }
+
+      .controls input[type="month"],
+      .controls button {
+        min-height: 42px;
+        font-size: 15px;
+        border-radius: 11px;
+        padding: 9px 12px;
+      }
 
       .table-wrap {
         overflow: visible;
@@ -236,36 +313,53 @@
         box-shadow: none;
       }
 
-      table { min-width: 0; width: 100%; }
-      thead { display: none; }
-      tbody, tr, td { display: block; width: 100%; }
+      table {
+        min-width: 0;
+        width: 100%;
+      }
+
+      thead {
+        display: none;
+      }
+
+      tbody,
+      tr,
+      td {
+        display: block;
+        width: 100%;
+      }
 
       tr {
-        margin-bottom: 10px;
+        margin-bottom: 8px;
         background: #fff;
         border: 1px solid var(--line);
-        border-radius: 14px;
+        border-radius: 12px;
         overflow: hidden;
         box-shadow: 0 4px 12px rgba(0,0,0,.04);
       }
 
       td {
         display: flex;
-        gap: 12px;
+        gap: 8px;
         align-items: center;
         justify-content: space-between;
-        padding: 10px 12px;
+        padding: 7px 10px;
         border-bottom: 1px solid #eef2f6;
         text-align: left;
+        font-size: 13px;
+        line-height: 1.1;
       }
 
-      td:last-child { border-bottom: none; }
+      td:last-child {
+        border-bottom: none;
+      }
 
       td::before {
         content: attr(data-label);
         font-weight: 700;
         color: #516173;
-        min-width: 72px;
+        min-width: 56px;
+        font-size: 12px;
       }
 
       td input {
@@ -273,16 +367,60 @@
         min-width: 0;
         background: #f9fbfd;
         border: 1px solid #dbe3ea;
-        border-radius: 10px;
-        padding: 8px 10px;
+        border-radius: 9px;
+        padding: 6px 8px;
+        font-size: 14px;
       }
 
-      .calculated, .profit { background: transparent; }
+      .calculated,
+      .profit-cell {
+        background: transparent;
+      }
+
+      .delete-btn {
+        padding: 7px 10px;
+        font-size: 13px;
+        border-radius: 8px;
+      }
+
+      /* 令 iPhone 一屏見到更多行：再壓細少少 */
+      td:nth-child(1),
+      td:nth-child(2),
+      td:nth-child(3),
+      td:nth-child(4),
+      td:nth-child(5),
+      td:nth-child(6),
+      td:nth-child(7),
+      td:nth-child(8),
+      td:nth-child(9) {
+        padding-top: 6px;
+        padding-bottom: 6px;
+      }
     }
   </style>
 </head>
 
 <body>
+  <div class="topbar">
+    <div class="summary">
+      <div class="summary-title">本月總覽</div>
+      <div class="summary-grid">
+        <div class="summary-item">
+          <span>總數</span>
+          <strong id="summaryTotal">¥0</strong>
+        </div>
+        <div class="summary-item">
+          <span>港幣</span>
+          <strong id="summaryHkd">$0</strong>
+        </div>
+        <div class="summary-item profit">
+          <span>賺取</span>
+          <strong id="summaryProfit">$0</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <h1>每月零件紀錄表</h1>
 
   <div class="controls">
@@ -290,24 +428,6 @@
     <div class="action-row">
       <button onclick="addRow()">➕ 新增項目</button>
       <button onclick="openSheet()">📊 開啟 Google Sheet</button>
-    </div>
-  </div>
-
-  <div class="summary">
-    <div class="summary-title">本月總覽</div>
-    <div class="summary-grid">
-      <div class="summary-item">
-        <span>總數</span>
-        <strong id="summaryTotal">¥0</strong>
-      </div>
-      <div class="summary-item">
-        <span>港幣</span>
-        <strong id="summaryHkd">$0</strong>
-      </div>
-      <div class="summary-item profit">
-        <span>賺取</span>
-        <strong id="summaryProfit">$0</strong>
-      </div>
     </div>
   </div>
 
@@ -418,8 +538,10 @@
           <td data-label="總數" class="calculated">¥${total}</td>
           <td data-label="成本"><input type="number" value="${cost}" onchange="updateField(${index}, 'cost', this.value)"></td>
           <td data-label="港幣" class="calculated">$${hkd}</td>
-          <td data-label="賺取" class="calculated profit">$${profit}</td>
-          <td data-label="操作" style="text-align:center;"><button class="delete-btn" onclick="deleteRecord(${item.row})">刪除</button></td>
+          <td data-label="賺取" class="calculated profit-cell">$${profit}</td>
+          <td data-label="操作" style="text-align:center;">
+            <button class="delete-btn" onclick="deleteRecord(${item.row})">刪除</button>
+          </td>
         `;
         tbody.appendChild(tr);
       });
@@ -441,7 +563,9 @@
         mode: 'no-cors'
       })
       .then(() => {
-        setTimeout(() => { statusEl.style.display = "none"; }, 800);
+        setTimeout(() => {
+          statusEl.style.display = "none";
+        }, 800);
       })
       .catch(err => {
         console.error("同步失敗:", err);
