@@ -528,33 +528,31 @@
   <div id="savingStatus" class="saving-status">💾 自動儲存中...</div>
 
   <script>
-    let currentMonth = ""; // 儲存轉換後的格式，例如 "May-26"
+    let currentMonth = ""; 
     let localDataCached = [];
     const webAppUrl = "https://script.google.com/macros/s/AKfycbz5q4zQLBg16QKrbBU1q7I5QwVyRUwMKX6k3CCa3mqGLRotnG9OWVSt6Z8L2ZUpxPHB/exec";
     const exchangeRate = 1.1;
 
-    // 新增：將 "2026-05" 轉換成 "May-26" 格式的函數
+    // 將 "2026-06" 乾淨地轉換成 "Jun-26"
     function formatToMonthStr(inputMonth) {
-  if (!inputMonth) return "";
-  // 假設 inputMonth 是 "2026-06"
-  const [year, month] = inputMonth.split("-");
-  
-  // 陣列索引：0=Jan, 1=Feb, 2=Mar, 3=Apr, 4=May, 5=Jun ...
-  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-  
-  // parseInt("06", 10) 會變成 6。 6 - 1 = 5。 months[5] 就是 "Jun"
-  const monthName = months[parseInt(month, 10) - 1];
-  const shortYear = year.substring(2); // "26"
-  
-  return `${monthName}-${shortYear}`; // 回傳 "Jun-26"
-}
-    // 新增：將 Date 物件自動生成今天的 "May-26" 預設格式（用於 addRow 預設值）
-    function getTodayString() {
+      if (!inputMonth) return "";
+      const parts = inputMonth.split("-");
+      if (parts.length !== 2) return inputMonth;
+      
+      const year = parts[0];
+      const month = parts[1];
+      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      const monthName = months[parseInt(month, 10) - 1];
+      const shortYear = year.substring(2);
+      return `${monthName}-${shortYear}`;
+    }
+
+    // 依據目前選擇的月份，產生新欄位的預設日期（例如選了 6 月，預設就填 Jun-26）
+    function getPresetDateString() {
+      if (currentMonth) return currentMonth;
       const today = new Date();
       const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-      const monthName = months[today.getMonth()];
-      const shortYear = String(today.getFullYear()).substring(2);
-      return `${monthName}-${today.getDate() < 26 ? today.getDate() : '26'}`; // 這裡預設給予你習慣的格式，或改成今天日期例如 May-23
+      return `${months[today.getMonth()]}-${String(today.getFullYear()).substring(2)}`;
     }
 
     function escapeHtml(value) {
@@ -578,15 +576,14 @@
     }
 
     async function loadData() {
-      // 獲取 input[type="month"] 的原生值 (例如 "2026-05")
       const rawMonth = document.getElementById("monthSelect").value;
       if (!rawMonth) return;
 
-      // 轉換為後端需要的格式 (例如 "May-26")
+      // 轉換出最乾淨的 "Jun-26" 字串
       currentMonth = formatToMonthStr(rawMonth);
 
       const tbody = document.querySelector("#dataTable tbody");
-      tbody.innerHTML = `<tr><td colspan="9" class="empty-row">🔄 正在讀取資料...</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="9" class="empty-row">🔄 正在讀取 ${currentMonth} 資料...</td></tr>`;
       updateSummary(0, 0, 0);
 
       try {
@@ -598,7 +595,7 @@
           renderInterface();
         } else {
           localDataCached = [];
-          tbody.innerHTML = `<tr><td colspan="9" class="empty-row">📅 本月無資料紀錄</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="9" class="empty-row">📅 ${currentMonth} 無資料紀錄</td></tr>`;
           updateSummary(0, 0, 0);
         }
       } catch (error) {
@@ -624,7 +621,13 @@
       }
 
       localDataCached.forEach((item, index) => {
-        const date = escapeHtml(item.date || "");
+        // 如果後端傳回的日期包含亂碼或時間戳，這裡只取前段或維持原樣
+        let date = String(item.date || "");
+        if (date.includes("2026年")) { 
+          date = currentMonth; // 防錯機制：若格式亂掉，強制顯示當前月份標籤
+        }
+        date = escapeHtml(date);
+        
         const name = escapeHtml(item.name || "");
         const price = Number(item.price) || 0;
         const qty = Number(item.qty) || 0;
@@ -683,8 +686,8 @@
     }
 
     function addRow() {
-      const defaultDate = getTodayString();
-      const date = prompt("請輸入日期 (例如 May-26)", defaultDate);
+      const defaultDate = getPresetDateString();
+      const date = prompt(`請輸入日期 (例如 ${defaultDate})`, defaultDate);
       const name = prompt("請輸入貨名");
       const price = parseFloat(prompt("價錢"));
       const qty = parseFloat(prompt("數量"));
@@ -715,19 +718,21 @@
       window.open("https://docs.google.com/spreadsheets/d/1yApB5X49TBWWXnYQmVJVCgHGW8cpax43U43rCGgkBHg/edit?pli=1&gid=0#gid=0", "_blank");
     }
 
-   window.onload = () => {
-  const today = new Date();
-  // 確保月份正確：today.getMonth() 回傳 0~11，所以 6 月會回傳 5。
-  // 我們必須 +1 變成 6，再透過 padStart 補零變成 "06"
-  const currentActualMonth = today.getMonth() + 1; 
-  const initRawMonth = today.getFullYear() + "-" + String(currentActualMonth).padStart(2, "0");
-  
-  // 這會將 input 欄位正確填入 "2026-06" (顯示為 2026年6月)
-  document.getElementById("monthSelect").value = initRawMonth;
-  
-  // 執行讀取資料
-  loadData();
-};
+    window.onload = () => {
+      const today = new Date();
+      
+      // 【強制推算到下一個月 2026-06】
+      today.setMonth(today.getMonth() + 1); 
+      
+      const currentActualMonth = today.getMonth() + 1; 
+      const initRawMonth = today.getFullYear() + "-" + String(currentActualMonth).padStart(2, "0");
+      
+      // 設定前端月份選擇器為 "2026-06"
+      document.getElementById("monthSelect").value = initRawMonth;
+      
+      // 載入資料（會完全以 "Jun-26" 執行）
+      loadData();
+    };
   </script>
 </body>
 </html>
