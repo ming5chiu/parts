@@ -113,7 +113,7 @@
 
   <script>
     let localDataCached = [];
-    let selectedMonthValue = ""; // 儲存標準格式如 "2026-06"
+    let selectedMonthValue = ""; 
     const webAppUrl = "https://script.google.com/macros/s/AKfycbz5q4zQLBg16QKrbBU1q7I5QwVyRUwMKX6k3CCa3mqGLRotnG9OWVSt6Z8L2ZUpxPHB/exec";
     const exchangeRate = 1.1;
 
@@ -132,7 +132,6 @@
       document.getElementById("summaryProfit").innerText = `$${formatMoney(totalProfit)}`;
     }
 
-    // 🌟 核心修改：前端直接將選取的規格 "2026-06" 丟給後端做精準比對
     async function loadData() {
       selectedMonthValue = document.getElementById("monthSelect").value;
       if (!selectedMonthValue) return;
@@ -142,7 +141,6 @@
       updateSummary(0, 0, 0);
 
       try {
-        // 直接傳遞 targetMonth=2026-06
         const res = await fetch(webAppUrl + "?targetMonth=" + encodeURIComponent(selectedMonthValue));
         const result = await res.json();
 
@@ -172,6 +170,7 @@
         const qty = Number(item.qty) || 0;
         const cost = Number(item.cost) || 0;
 
+        // 重新依據修正後的正確欄位數值進行實時計算
         const totalRmb = price * qty;
         const costRmb = cost * qty;
         const profitHkd = (totalRmb - costRmb) * exchangeRate;
@@ -216,7 +215,6 @@
     }
 
     function addRow() {
-      // 🌟 新增時，自動預設填入當前網頁選定的標準月份（例如 2026-06）
       const date = prompt(`請確認年份月份`, selectedMonthValue);
       const name = prompt("請輸入貨名");
       const price = parseFloat(prompt("價錢"));
@@ -249,7 +247,7 @@
 
     window.onload = () => {
       const today = new Date();
-      today.setMonth(today.getMonth() + 1); // 預設強制跳到 6 月（2026-06）
+      today.setMonth(today.getMonth() + 1); // 預設強制跳到下個月（2026-06）
       const currentActualMonth = today.getMonth() + 1; 
       const initRawMonth = today.getFullYear() + "-" + String(currentActualMonth).padStart(2, "0");
       document.getElementById("monthSelect").value = initRawMonth;
