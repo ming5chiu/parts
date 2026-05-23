@@ -310,167 +310,35 @@
     }
 
     @media (max-width: 820px) {
-      :root {
-        --topbar-h: 108px;
-      }
-
-      body {
-        padding-left: 8px;
-        padding-right: 8px;
-        padding-bottom: 10px;
-      }
-
-      h1 {
-        font-size: 17px;
-        margin: 0 0 8px;
-      }
-
-      .topbar {
-        padding: 7px 8px 9px;
-      }
-
-      .summary {
-        padding: 8px;
-        border-radius: 16px;
-      }
-
-      .summary-title {
-        font-size: 11px;
-        margin-bottom: 6px;
-      }
-
-      .summary-grid {
-        gap: 6px;
-      }
-
-      .summary-item {
-        min-height: 50px;
-        padding: 7px 8px;
-        border-radius: 12px;
-      }
-
-      .summary-item span {
-        font-size: 10px;
-        margin-bottom: 2px;
-      }
-
-      .summary-item strong {
-        font-size: 15px;
-      }
-
-      .controls {
-        gap: 7px;
-        margin-bottom: 8px;
-      }
-
-      .controls input[type="month"],
-      .controls button {
-        min-height: 40px;
-        font-size: 14px;
-        padding: 8px 10px;
-        border-radius: 12px;
-      }
-
-      .action-row {
-        gap: 8px;
-      }
-
-      .table-wrap {
-        overflow: visible;
-      }
-
-      table {
-        min-width: 0;
-        width: 100%;
-        border: none;
-        box-shadow: none;
-        background: transparent;
-      }
-
-      thead {
-        display: none;
-      }
-
-      tbody,
-      tr,
-      td {
-        display: block;
-        width: 100%;
-      }
-
-      tr {
-        margin-bottom: 8px;
-        background: #fff;
-        border: 1px solid var(--line);
-        border-radius: 14px;
-        overflow: hidden;
-        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.04);
-      }
-
-      td {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 8px;
-        padding: 6px 10px;
-        border-bottom: 1px solid rgba(60, 60, 67, 0.08);
-        text-align: left;
-        font-size: 12px;
-        line-height: 1.05;
-        background: #fff;
-      }
-
-      td:last-child {
-        border-bottom: none;
-      }
-
-      td::before {
-        content: attr(data-label);
-        font-weight: 700;
-        color: var(--muted);
-        min-width: 58px;
-        flex: 0 0 58px;
-        font-size: 11px;
-      }
-
-      td input[type="text"],
-      td input[type="number"] {
-        flex: 1;
-        min-width: 0;
-        width: 100%;
-        background: #f7f7fb;
-        border: 1px solid rgba(60, 60, 67, 0.12);
-        border-radius: 9px;
-        padding: 5px 7px;
-        font-size: 13px;
-        line-height: 1.1;
-      }
-
-      td:nth-child(2) input[type="text"] {
-        font-size: 13px;
-      }
-
-      .calculated {
-        background: inherit;
-      }
-
-      .rmb-cell {
-        background: rgba(0, 122, 255, 0.08);
-      }
-
-      .cost-cell {
-        background: rgba(255, 149, 0, 0.10);
-      }
-
-      .profit-cell {
-        background: rgba(52, 199, 89, 0.10);
-      }
-
-      .delete-btn {
-        padding: 6px 10px;
-        font-size: 12px;
-        border-radius: 9px;
-      }
+      /* 手機版樣式維持不變 */
+      :root { --topbar-h: 108px; }
+      body { padding-left: 8px; padding-right: 8px; padding-bottom: 10px; }
+      h1 { font-size: 17px; margin: 0 0 8px; }
+      .topbar { padding: 7px 8px 9px; }
+      .summary { padding: 8px; border-radius: 16px; }
+      .summary-title { font-size: 11px; margin-bottom: 6px; }
+      .summary-grid { gap: 6px; }
+      .summary-item { min-height: 50px; padding: 7px 8px; border-radius: 12px; }
+      .summary-item span { font-size: 10px; margin-bottom: 2px; }
+      .summary-item strong { font-size: 15px; }
+      .controls { gap: 7px; margin-bottom: 8px; }
+      .controls input[type="month"], .controls button { min-height: 40px; font-size: 14px; padding: 8px 10px; border-radius: 12px; }
+      .action-row { gap: 8px; }
+      .table-wrap { overflow: visible; }
+      table { min-width: 0; width: 100%; border: none; box-shadow: none; background: transparent; }
+      thead { display: none; }
+      tbody, tr, td { display: block; width: 100%; }
+      tr { margin-bottom: 8px; background: #fff; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; box-shadow: 0 3px 10px rgba(0, 0, 0, 0.04); }
+      td { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 6px 10px; border-bottom: 1px solid rgba(60, 60, 67, 0.08); text-align: left; font-size: 12px; line-height: 1.05; background: #fff; }
+      td:last-child { border-bottom: none; }
+      td::before { content: attr(data-label); font-weight: 700; color: var(--muted); min-width: 58px; flex: 0 0 58px; font-size: 11px; }
+      td input[type="text"], td input[type="number"] { flex: 1; min-width: 0; width: 100%; background: #f7f7fb; border: 1px solid rgba(60, 60, 67, 0.12); border-radius: 9px; padding: 5px 7px; font-size: 13px; line-height: 1.1; }
+      td:nth-child(2) input[type="text"] { font-size: 13px; }
+      .calculated { background: inherit; }
+      .rmb-cell { background: rgba(0, 122, 255, 0.08); }
+      .cost-cell { background: rgba(255, 149, 0, 0.10); }
+      .profit-cell { background: rgba(52, 199, 89, 0.10); }
+      .delete-btn { padding: 6px 10px; font-size: 12px; border-radius: 9px; }
     }
   </style>
 </head>
@@ -499,7 +367,7 @@
   <h1>每月零件紀錄表</h1>
 
   <div class="controls">
-    <input type="month" id="monthSelect" onchange="loadData()" />
+    <input type="month" id="monthSelect" onchange="filterAndRender()" />
     <div class="action-row">
       <button onclick="addRow()">➕ 新增項目</button>
       <button onclick="openSheet()">📊 開啟 Google Sheet</button>
@@ -528,40 +396,24 @@
   <div id="savingStatus" class="saving-status">💾 自動儲存中...</div>
 
   <script>
-    let currentMonth = ""; 
-    let localDataCached = [];
+    let allDataCached = []; // 快取從後端拿到的整張表資料
+    let targetMonthPrefix = ""; // 儲存像是 "Jun" 或 "May" 用來在前台比對日期欄開頭
+    let currentMonthParam = ""; // 傳給後端新增時用的月份參數
     const webAppUrl = "https://script.google.com/macros/s/AKfycbz5q4zQLBg16QKrbBU1q7I5QwVyRUwMKX6k3CCa3mqGLRotnG9OWVSt6Z8L2ZUpxPHB/exec";
     const exchangeRate = 1.1;
 
-    // 將 "2026-06" 乾淨地轉換成 "Jun-26"
-    function formatToMonthStr(inputMonth) {
-      if (!inputMonth) return "";
-      const parts = inputMonth.split("-");
-      if (parts.length !== 2) return inputMonth;
-      
-      const year = parts[0];
-      const month = parts[1];
+    // 解析 HTML5 選擇器，轉換出前台比對需要的月份前綴 (例如 "2026-06" -> "Jun")
+    function parseSelectedMonth(rawMonth) {
+      if (!rawMonth) return { prefix: "", fullParam: "" };
+      const [year, month] = rawMonth.split("-");
       const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-      const monthName = months[parseInt(month, 10) - 1];
-      const shortYear = year.substring(2);
-      return `${monthName}-${shortYear}`;
-    }
-
-    // 依據目前選擇的月份，產生新欄位的預設日期（例如選了 6 月，預設就填 Jun-26）
-    function getPresetDateString() {
-      if (currentMonth) return currentMonth;
-      const today = new Date();
-      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-      return `${months[today.getMonth()]}-${String(today.getFullYear()).substring(2)}`;
+      const prefix = months[parseInt(month, 10) - 1];
+      const fullParam = `${prefix}-${year.substring(2)}`; // 例如 "Jun-26"
+      return { prefix, fullParam };
     }
 
     function escapeHtml(value) {
-      return String(value ?? "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#39;");
+      return String(value ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
     }
 
     function formatMoney(value) {
@@ -575,59 +427,55 @@
       document.getElementById("summaryProfit").innerText = `$${formatMoney(totalProfit)}`;
     }
 
+    // 核心修改 1：一次抓取資料，不用管後端的 month 分類錯亂問題
     async function loadData() {
-      const rawMonth = document.getElementById("monthSelect").value;
-      if (!rawMonth) return;
-
-      // 轉換出最乾淨的 "Jun-26" 字串
-      currentMonth = formatToMonthStr(rawMonth);
-
       const tbody = document.querySelector("#dataTable tbody");
-      tbody.innerHTML = `<tr><td colspan="9" class="empty-row">🔄 正在讀取 ${currentMonth} 資料...</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="9" class="empty-row">🔄 正在連線資料庫...</td></tr>`;
       updateSummary(0, 0, 0);
 
       try {
-        const res = await fetch(webAppUrl + "?month=" + encodeURIComponent(currentMonth));
+        // 這裡不傳月份，或是傳空，讓 Google Apps Script 把近期或整張表的資料倒出來
+        const res = await fetch(webAppUrl);
         const result = await res.json();
 
         if (result.success && Array.isArray(result.data)) {
-          localDataCached = result.data;
-          renderInterface();
+          allDataCached = result.data;
+          filterAndRender(); // 拿到資料後，交給前台根據「日期欄」篩選
         } else {
-          localDataCached = [];
-          tbody.innerHTML = `<tr><td colspan="9" class="empty-row">📅 ${currentMonth} 無資料紀錄</td></tr>`;
-          updateSummary(0, 0, 0);
+          allDataCached = [];
+          tbody.innerHTML = `<tr><td colspan="9" class="empty-row">📅 試算表內無任何紀錄</td></tr>`;
         }
       } catch (error) {
         console.error("讀取失敗:", error);
-        localDataCached = [];
-        tbody.innerHTML = `<tr><td colspan="9" class="empty-row">讀取失敗</td></tr>`;
-        updateSummary(0, 0, 0);
+        tbody.innerHTML = `<tr><td colspan="9" class="empty-row">❌ 讀取失敗，請重新整理</td></tr>`;
       }
     }
 
-    function renderInterface() {
+    // 核心修改 2：純前端根據第一欄「日期」做智能篩選與渲染
+    function filterAndRender() {
+      const rawMonth = document.getElementById("monthSelect").value;
+      const { prefix, fullParam } = parseSelectedMonth(rawMonth);
+      targetMonthPrefix = prefix;
+      currentMonthParam = fullParam;
+
       const tbody = document.querySelector("#dataTable tbody");
       tbody.innerHTML = "";
 
       let totalSum = 0;
       let totalCost = 0;
       let totalProfit = 0;
+      let hasData = false;
 
-      if (!localDataCached.length) {
-        tbody.innerHTML = `<tr><td colspan="9" class="empty-row">📅 本月無資料紀錄</td></tr>`;
-        updateSummary(0, 0, 0);
-        return;
-      }
-
-      localDataCached.forEach((item, index) => {
-        // 如果後端傳回的日期包含亂碼或時間戳，這裡只取前段或維持原樣
-        let date = String(item.date || "");
-        if (date.includes("2026年")) { 
-          date = currentMonth; // 防錯機制：若格式亂掉，強制顯示當前月份標籤
-        }
-        date = escapeHtml(date);
+      allDataCached.forEach((item, index) => {
+        const dateStr = String(item.date || "");
         
+        // 🌟 關鍵邏輯：只要日期欄（如 "Jun-23", "Jun-1"）是以選擇的月份（如 "Jun"）開頭，就放進這個月的表格！
+        if (!dateStr.startsWith(targetMonthPrefix)) {
+          return; // 月份對不上，跳過
+        }
+
+        hasData = true;
+        const date = escapeHtml(dateStr);
         const name = escapeHtml(item.name || "");
         const price = Number(item.price) || 0;
         const qty = Number(item.qty) || 0;
@@ -658,13 +506,17 @@
         tbody.appendChild(tr);
       });
 
+      if (!hasData) {
+        tbody.innerHTML = `<tr><td colspan="9" class="empty-row">📅 ${currentMonthParam} 月份無符合的日期紀錄</td></tr>`;
+      }
+
       updateSummary(totalSum, totalCost, totalProfit);
     }
 
     function updateField(dataIndex, field, value) {
-      const item = localDataCached[dataIndex];
+      const item = allDataCached[dataIndex];
       item[field] = value;
-      renderInterface();
+      filterAndRender(); // 即時重新排序計算
 
       const statusEl = document.getElementById("savingStatus");
       statusEl.innerText = "💾 自動儲存中...";
@@ -674,20 +526,21 @@
         method: "POST",
         mode: "no-cors"
       })
-        .then(() => {
-          setTimeout(() => {
-            statusEl.style.display = "none";
-          }, 800);
-        })
-        .catch(err => {
-          console.error("同步失敗:", err);
-          statusEl.innerText = "❌ 儲存失敗";
-        });
+      .then(() => {
+        setTimeout(() => { statusEl.style.display = "none"; }, 800);
+      })
+      .catch(err => {
+        console.error("同步失敗:", err);
+        statusEl.innerText = "❌ 儲存失敗";
+      });
     }
 
     function addRow() {
-      const defaultDate = getPresetDateString();
-      const date = prompt(`請輸入日期 (例如 ${defaultDate})`, defaultDate);
+      // 根據網頁目前選的月份，給出預設日期（例如選了 6 月，預設跳出 Jun-23）
+      const today = new Date();
+      const defaultDateStr = `${targetMonthPrefix}-${today.getDate()}`;
+      
+      const date = prompt(`請輸入日期 (將依此字串分類月份)`, defaultDateStr);
       const name = prompt("請輸入貨名");
       const price = parseFloat(prompt("價錢"));
       const qty = parseFloat(prompt("數量"));
@@ -697,11 +550,11 @@
         fetch(webAppUrl, {
           method: "POST",
           mode: "no-cors",
-          body: JSON.stringify({ date, name, price, qty, cost, month: currentMonth }),
+          body: JSON.stringify({ date, name, price, qty, cost, month: currentMonthParam }),
           headers: { "Content-Type": "text/plain" }
         })
-          .then(() => loadData())
-          .catch(err => alert("儲存失敗：" + err));
+        .then(() => loadData()) // 重新下載整張表，確保排序正確
+        .catch(err => alert("儲存失敗：" + err));
       } else {
         alert("請完整輸入資料");
       }
@@ -710,7 +563,7 @@
     function deleteRecord(row) {
       if (confirm("確定要刪除這筆資料嗎？")) {
         fetch(webAppUrl + "?action=delete&row=" + row, { method: "POST" })
-          .then(() => loadData());
+        .then(() => loadData());
       }
     }
 
@@ -718,19 +571,16 @@
       window.open("https://docs.google.com/spreadsheets/d/1yApB5X49TBWWXnYQmVJVCgHGW8cpax43U43rCGgkBHg/edit?pli=1&gid=0#gid=0", "_blank");
     }
 
+    // 網頁啟動：預設切換至 2026-06 
     window.onload = () => {
       const today = new Date();
-      
-      // 【強制推算到下一個月 2026-06】
+      // 強制推到下個月 (因為你想提早記 6 月帳)
       today.setMonth(today.getMonth() + 1); 
       
       const currentActualMonth = today.getMonth() + 1; 
       const initRawMonth = today.getFullYear() + "-" + String(currentActualMonth).padStart(2, "0");
       
-      // 設定前端月份選擇器為 "2026-06"
       document.getElementById("monthSelect").value = initRawMonth;
-      
-      // 載入資料（會完全以 "Jun-26" 執行）
       loadData();
     };
   </script>
