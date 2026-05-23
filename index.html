@@ -26,7 +26,7 @@
     html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif; }
     body { padding: calc(var(--topbar-h) + var(--safe-top) + 12px) 10px 12px; }
     h1 { margin: 0 0 10px; text-align: center; font-size: 20px; font-weight: 700; }
-    .topbar { position: fixed; left: 0; right: 0; top: var(--safe-top); z-index: 1000; padding: 8px 10px 10px; background: rgba(242, 242, 247, 0.88); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border-bottom: 1px solid var(--line); }
+    .topbar { position: fixed; left: 0; right: 0; top: var(--safe-top); z-index: 1000; padding: 8px 10px 10px; background: rgba(242, 242, 247, 0.88); backdrop-filter: blur(18px); border-bottom: 1px solid var(--line); }
     .summary { background: var(--card); border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--shadow); padding: 10px; }
     .summary-title { font-size: 12px; font-weight: 700; color: var(--muted); margin-bottom: 8px; }
     .summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
@@ -94,7 +94,7 @@
     <table id="dataTable">
       <thead>
         <tr>
-          <th>月份記錄</th>
+          <th>年份月份</th>
           <th>貨名</th>
           <th>價錢</th>
           <th>數量</th>
@@ -113,19 +113,9 @@
 
   <script>
     let localDataCached = [];
-    let currentMonthPrefix = ""; 
-    let currentMonthFull = "";   
+    let selectedMonthValue = ""; // 儲存標準格式如 "2026-06"
     const webAppUrl = "https://script.google.com/macros/s/AKfycbz5q4zQLBg16QKrbBU1q7I5QwVyRUwMKX6k3CCa3mqGLRotnG9OWVSt6Z8L2ZUpxPHB/exec";
     const exchangeRate = 1.1;
-
-    function parseSelectedMonth() {
-      const rawMonth = document.getElementById("monthSelect").value;
-      if (!rawMonth) return;
-      const [year, month] = rawMonth.split("-");
-      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-      currentMonthPrefix = months[parseInt(month, 10) - 1]; 
-      currentMonthFull = `${currentMonthPrefix}-${year.substring(2)}`; 
-    }
 
     function escapeHtml(value) {
       return String(value ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -142,16 +132,18 @@
       document.getElementById("summaryProfit").innerText = `$${formatMoney(totalProfit)}`;
     }
 
+    // 🌟 核心修改：前端直接將選取的規格 "2026-06" 丟給後端做精準比對
     async function loadData() {
-      parseSelectedMonth();
-      if (!currentMonthPrefix) return;
+      selectedMonthValue = document.getElementById("monthSelect").value;
+      if (!selectedMonthValue) return;
 
       const tbody = document.querySelector("#dataTable tbody");
-      tbody.innerHTML = `<tr><td colspan="9" class="empty-row">🔄 正在讀取 ${currentMonthFull} 的資料...</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="9" class="empty-row">🔄 正在讀取 ${selectedMonthValue} 的資料...</td></tr>`;
       updateSummary(0, 0, 0);
 
       try {
-        const res = await fetch(webAppUrl + "?monthPrefix=" + encodeURIComponent(currentMonthPrefix));
+        // 直接傳遞 targetMonth=2026-06
+        const res = await fetch(webAppUrl + "?targetMonth=" + encodeURIComponent(selectedMonthValue));
         const result = await res.json();
 
         if (result.success && Array.isArray(result.data) && result.data.length > 0) {
@@ -159,7 +151,7 @@
           renderInterface();
         } else {
           localDataCached = [];
-          tbody.innerHTML = `<tr><td colspan="9" class="empty-row">📅 ${currentMonthFull} 無符合的月份紀錄</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="9" class="empty-row">📅 ${selectedMonthValue} 無符合的月份紀錄</td></tr>`;
         }
       } catch (error) {
         console.error("讀取失敗:", error);
@@ -190,7 +182,7 @@
 
         const tr = document.createElement("tr");
         tr.innerHTML = `
-          <td data-label="月份記錄"><input type="text" value="${date}" onchange="updateField(${index}, 'date', this.value)"></td>
+          <td data-label="年份月份"><input type="text" value="${date}" onchange="updateField(${index}, 'date', this.value)"></td>
           <td data-label="貨名"><input type="text" value="${name}" onchange="updateField(${index}, 'name', this.value)"></td>
           <td data-label="價錢"><input type="number" value="${price}" onchange="updateField(${index}, 'price', this.value)"></td>
           <td data-label="數量"><input type="number" value="${qty}" onchange="updateField(${index}, 'qty', this.value)"></td>
@@ -224,11 +216,8 @@
     }
 
     function addRow() {
-      const today = new Date();
-      // 🌟 預設產生的字串，符合你新的「月份記錄」邏輯（例如：Jun-23）
-      const defaultDateStr = `${currentMonthPrefix}-${today.getDate()}`; 
-      
-      const date = prompt(`請輸入月份記錄 (將依此字串分類查詢)`, defaultDateStr);
+      // 🌟 新增時，自動預設填入當前網頁選定的標準月份（例如 2026-06）
+      const date = prompt(`請確認年份月份`, selectedMonthValue);
       const name = prompt("請輸入貨名");
       const price = parseFloat(prompt("價錢"));
       const qty = parseFloat(prompt("數量"));
@@ -260,7 +249,7 @@
 
     window.onload = () => {
       const today = new Date();
-      today.setMonth(today.getMonth() + 1); // 預設強制跳到 6 月方便提早記帳
+      today.setMonth(today.getMonth() + 1); // 預設強制跳到 6 月（2026-06）
       const currentActualMonth = today.getMonth() + 1; 
       const initRawMonth = today.getFullYear() + "-" + String(currentActualMonth).padStart(2, "0");
       document.getElementById("monthSelect").value = initRawMonth;
