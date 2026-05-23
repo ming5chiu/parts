@@ -535,14 +535,19 @@
 
     // 新增：將 "2026-05" 轉換成 "May-26" 格式的函數
     function formatToMonthStr(inputMonth) {
-      if (!inputMonth) return "";
-      const [year, month] = inputMonth.split("-");
-      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-      const monthName = months[parseInt(month, 10) - 1];
-      const shortYear = year.substring(2);
-      return `${monthName}-${shortYear}`;
-    }
-
+  if (!inputMonth) return "";
+  // 假設 inputMonth 是 "2026-06"
+  const [year, month] = inputMonth.split("-");
+  
+  // 陣列索引：0=Jan, 1=Feb, 2=Mar, 3=Apr, 4=May, 5=Jun ...
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  
+  // parseInt("06", 10) 會變成 6。 6 - 1 = 5。 months[5] 就是 "Jun"
+  const monthName = months[parseInt(month, 10) - 1];
+  const shortYear = year.substring(2); // "26"
+  
+  return `${monthName}-${shortYear}`; // 回傳 "Jun-26"
+}
     // 新增：將 Date 物件自動生成今天的 "May-26" 預設格式（用於 addRow 預設值）
     function getTodayString() {
       const today = new Date();
@@ -710,15 +715,19 @@
       window.open("https://docs.google.com/spreadsheets/d/1yApB5X49TBWWXnYQmVJVCgHGW8cpax43U43rCGgkBHg/edit?pli=1&gid=0#gid=0", "_blank");
     }
 
-    window.onload = () => {
-      const today = new Date();
-      // 初始化 input[type="month"] 為原生的 "YYYY-MM"
-      const initRawMonth = today.getFullYear() + "-" + String(today.getMonth() + 1).padStart(2, "0");
-      document.getElementById("monthSelect").value = initRawMonth;
-      
-      // 執行讀取資料（會在函數內部自動轉換成 "May-26" 格式發送請求）
-      loadData();
-    };
+   window.onload = () => {
+  const today = new Date();
+  // 確保月份正確：today.getMonth() 回傳 0~11，所以 6 月會回傳 5。
+  // 我們必須 +1 變成 6，再透過 padStart 補零變成 "06"
+  const currentActualMonth = today.getMonth() + 1; 
+  const initRawMonth = today.getFullYear() + "-" + String(currentActualMonth).padStart(2, "0");
+  
+  // 這會將 input 欄位正確填入 "2026-06" (顯示為 2026年6月)
+  document.getElementById("monthSelect").value = initRawMonth;
+  
+  // 執行讀取資料
+  loadData();
+};
   </script>
 </body>
 </html>
