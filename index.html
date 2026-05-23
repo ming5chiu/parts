@@ -94,7 +94,7 @@
     <table id="dataTable">
       <thead>
         <tr>
-          <th>日期</th>
+          <th>月份記錄</th>
           <th>貨名</th>
           <th>價錢</th>
           <th>數量</th>
@@ -113,19 +113,18 @@
 
   <script>
     let localDataCached = [];
-    let currentMonthPrefix = ""; // 例如 "Jun"
-    let currentMonthFull = "";   // 例如 "Jun-26"
+    let currentMonthPrefix = ""; 
+    let currentMonthFull = "";   
     const webAppUrl = "https://script.google.com/macros/s/AKfycbz5q4zQLBg16QKrbBU1q7I5QwVyRUwMKX6k3CCa3mqGLRotnG9OWVSt6Z8L2ZUpxPHB/exec";
     const exchangeRate = 1.1;
 
-    // 解析選取的月份，轉換成 "Jun" 的開頭標籤
     function parseSelectedMonth() {
       const rawMonth = document.getElementById("monthSelect").value;
       if (!rawMonth) return;
       const [year, month] = rawMonth.split("-");
       const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-      currentMonthPrefix = months[parseInt(month, 10) - 1]; // "Jun"
-      currentMonthFull = `${currentMonthPrefix}-${year.substring(2)}`; // "Jun-26"
+      currentMonthPrefix = months[parseInt(month, 10) - 1]; 
+      currentMonthFull = `${currentMonthPrefix}-${year.substring(2)}`; 
     }
 
     function escapeHtml(value) {
@@ -143,7 +142,6 @@
       document.getElementById("summaryProfit").innerText = `$${formatMoney(totalProfit)}`;
     }
 
-    // 🌟 核心修改：直接將 "Jun" 當作參數傳給後端進行過濾查詢
     async function loadData() {
       parseSelectedMonth();
       if (!currentMonthPrefix) return;
@@ -153,7 +151,6 @@
       updateSummary(0, 0, 0);
 
       try {
-        // 帶上過濾參數 monthPrefix=Jun
         const res = await fetch(webAppUrl + "?monthPrefix=" + encodeURIComponent(currentMonthPrefix));
         const result = await res.json();
 
@@ -162,7 +159,7 @@
           renderInterface();
         } else {
           localDataCached = [];
-          tbody.innerHTML = `<tr><td colspan="9" class="empty-row">📅 ${currentMonthFull} 無符合的日期紀錄</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="9" class="empty-row">📅 ${currentMonthFull} 無符合的月份紀錄</td></tr>`;
         }
       } catch (error) {
         console.error("讀取失敗:", error);
@@ -193,7 +190,7 @@
 
         const tr = document.createElement("tr");
         tr.innerHTML = `
-          <td data-label="日期"><input type="text" value="${date}" onchange="updateField(${index}, 'date', this.value)"></td>
+          <td data-label="月份記錄"><input type="text" value="${date}" onchange="updateField(${index}, 'date', this.value)"></td>
           <td data-label="貨名"><input type="text" value="${name}" onchange="updateField(${index}, 'name', this.value)"></td>
           <td data-label="價錢"><input type="number" value="${price}" onchange="updateField(${index}, 'price', this.value)"></td>
           <td data-label="數量"><input type="number" value="${qty}" onchange="updateField(${index}, 'qty', this.value)"></td>
@@ -228,9 +225,10 @@
 
     function addRow() {
       const today = new Date();
-      const defaultDateStr = `${currentMonthPrefix}-${today.getDate()}`; // 預設產生如 "Jun-23"
+      // 🌟 預設產生的字串，符合你新的「月份記錄」邏輯（例如：Jun-23）
+      const defaultDateStr = `${currentMonthPrefix}-${today.getDate()}`; 
       
-      const date = prompt(`請輸入日期 (將依此字串分類月份)`, defaultDateStr);
+      const date = prompt(`請輸入月份記錄 (將依此字串分類查詢)`, defaultDateStr);
       const name = prompt("請輸入貨名");
       const price = parseFloat(prompt("價錢"));
       const qty = parseFloat(prompt("數量"));
