@@ -528,10 +528,29 @@
   <div id="savingStatus" class="saving-status">💾 自動儲存中...</div>
 
   <script>
-    let currentMonth = "";
+    let currentMonth = ""; // 儲存轉換後的格式，例如 "May-26"
     let localDataCached = [];
     const webAppUrl = "https://script.google.com/macros/s/AKfycbz5q4zQLBg16QKrbBU1q7I5QwVyRUwMKX6k3CCa3mqGLRotnG9OWVSt6Z8L2ZUpxPHB/exec";
     const exchangeRate = 1.1;
+
+    // 新增：將 "2026-05" 轉換成 "May-26" 格式的函數
+    function formatToMonthStr(inputMonth) {
+      if (!inputMonth) return "";
+      const [year, month] = inputMonth.split("-");
+      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      const monthName = months[parseInt(month, 10) - 1];
+      const shortYear = year.substring(2);
+      return `${monthName}-${shortYear}`;
+    }
+
+    // 新增：將 Date 物件自動生成今天的 "May-26" 預設格式（用於 addRow 預設值）
+    function getTodayString() {
+      const today = new Date();
+      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      const monthName = months[today.getMonth()];
+      const shortYear = String(today.getFullYear()).substring(2);
+      return `${monthName}-${today.getDate() < 26 ? today.getDate() : '26'}`; // 這裡預設給予你習慣的格式，或改成今天日期例如 May-23
+    }
 
     function escapeHtml(value) {
       return String(value ?? "")
@@ -554,15 +573,19 @@
     }
 
     async function loadData() {
-      currentMonth = document.getElementById("monthSelect").value;
-      if (!currentMonth) return;
+      // 獲取 input[type="month"] 的原生值 (例如 "2026-05")
+      const rawMonth = document.getElementById("monthSelect").value;
+      if (!rawMonth) return;
+
+      // 轉換為後端需要的格式 (例如 "May-26")
+      currentMonth = formatToMonthStr(rawMonth);
 
       const tbody = document.querySelector("#dataTable tbody");
       tbody.innerHTML = `<tr><td colspan="9" class="empty-row">🔄 正在讀取資料...</td></tr>`;
       updateSummary(0, 0, 0);
 
       try {
-        const res = await fetch(webAppUrl + "?month=" + currentMonth);
+        const res = await fetch(webAppUrl + "?month=" + encodeURIComponent(currentMonth));
         const result = await res.json();
 
         if (result.success && Array.isArray(result.data)) {
@@ -655,7 +678,8 @@
     }
 
     function addRow() {
-      const date = prompt("請輸入日期 (例如 May-26)", "May-26");
+      const defaultDate = getTodayString();
+      const date = prompt("請輸入日期 (例如 May-26)", defaultDate);
       const name = prompt("請輸入貨名");
       const price = parseFloat(prompt("價錢"));
       const qty = parseFloat(prompt("數量"));
@@ -688,8 +712,11 @@
 
     window.onload = () => {
       const today = new Date();
-      currentMonth = today.getFullYear() + "-" + String(today.getMonth() + 1).padStart(2, "0");
-      document.getElementById("monthSelect").value = currentMonth;
+      // 初始化 input[type="month"] 為原生的 "YYYY-MM"
+      const initRawMonth = today.getFullYear() + "-" + String(today.getMonth() + 1).padStart(2, "0");
+      document.getElementById("monthSelect").value = initRawMonth;
+      
+      // 執行讀取資料（會在函數內部自動轉換成 "May-26" 格式發送請求）
       loadData();
     };
   </script>
