@@ -24,16 +24,11 @@
     }
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif; }
-    
-    /* 針對 iPhone 頂部安全區域留白 */
     body { padding: calc(var(--topbar-h) + var(--safe-top) + 16px) 12px calc(env(safe-area-inset-bottom, 0px) + 20px); }
-    
     h1 { margin: 0 0 12px; text-align: center; font-size: 22px; font-weight: 700; color: #000; }
-    
-    /* 固定頂部面板 */
     .topbar { position: fixed; left: 0; right: 0; top: 0; z-index: 1000; padding: calc(var(--safe-top) + 10px) 12px 10px; background: rgba(242, 242, 247, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid var(--line); }
     .summary { background: var(--card-solid); border-radius: 16px; box-shadow: var(--shadow); padding: 12px; border: 1px solid rgba(60, 60, 67, 0.05); }
-    .summary-title { font-size: 13px; font-weight: 600; color: var(--muted); margin-bottom: 8px; text-transform: uppercase; }
+    .summary-title { font-size: 13px; font-weight: 600; color: var(--muted); margin-bottom: 8px; }
     .summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
     .summary-item { border-radius: 12px; padding: 8px; min-height: 52px; display: flex; flex-direction: column; justify-content: center; text-align: center; }
     .summary-item span { font-size: 11px; font-weight: 500; color: var(--muted); margin-bottom: 2px; }
@@ -41,52 +36,39 @@
     .summary-item.total { background: rgba(0, 122, 255, 0.06); } .summary-item.total strong { color: var(--accent); }
     .summary-item.hkd { background: rgba(255, 149, 0, 0.08); } .summary-item.hkd strong { color: #ff9500; }
     .summary-item.profit { background: rgba(52, 199, 89, 0.08); } .summary-item.profit strong { color: var(--good); }
-    
-    /* 控制按鈕區 */
     .controls { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
     .controls input[type="month"] { width: 100%; min-height: 46px; border-radius: 12px; border: 1px solid var(--line); font-size: 17px; padding: 10px 12px; background: var(--card-solid); color: #000; text-align: center; -webkit-appearance: none; }
     .action-row { display: flex; gap: 10px; }
-    .action-row button { flex: 1; min-height: 46px; border-radius: 12px; font-size: 16px; font-weight: 600; border: none; cursor: pointer; }
+    .action-row button { flex: 1; min-height: 46px; border-radius: 12px; font-size: 16px; font-weight: 600; border: none; }
     .btn-add { background: var(--accent); color: #fff; box-shadow: 0 4px 12px rgba(0,122,255,0.2); }
     .btn-sheet { background: rgba(142, 142, 147, 0.15); color: var(--text); }
-    
-    /* RWD 表格與 iPhone 卡片流式佈局 */
     .table-wrap { width: 100%; }
-    table { width: 100%; border-collapse: collapse; background: transparent; }
+    table { width: 100%; border-collapse: collapse; }
     thead { display: table-header-group; }
     thead th { background: rgba(60, 60, 67, 0.04); color: var(--muted); padding: 12px 8px; font-size: 13px; font-weight: 600; text-align: right; border-bottom: 1px solid var(--line); }
     thead th:nth-child(1), thead th:nth-child(2) { text-align: left; }
-    
     tr { background: var(--card-solid); border-bottom: 1px solid var(--line); }
     td { padding: 12px 8px; font-size: 16px; text-align: right; color: var(--text); }
     td:nth-child(1), td:nth-child(2) { text-align: left; }
-    
-    /* 輸入框優化 (適合 iOS 點擊) */
     input[type="text"], input[type="number"] { width: 100%; border: 1px solid transparent; background: transparent; padding: 6px; font-size: 16px; color: var(--text); text-align: right; outline: none; border-radius: 6px; }
     td:nth-child(1) input, td:nth-child(2) input { text-align: left; }
     input:focus { background: #f2f2f7; border-color: rgba(0,122,255,0.2); }
-    
     .calculated { font-weight: 600; }
     .rmb-cell { color: var(--accent); }
     .cost-cell { color: #ff9500; }
     .profit-cell { color: var(--good); font-weight: 700; }
     .delete-btn { background: rgba(255, 59, 48, 0.08); color: var(--danger); border: none; padding: 6px 12px; border-radius: 8px; font-size: 14px; font-weight: 600; }
-    .saving-status { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(env(safe-area-inset-bottom, 0px) + 16px); background: rgba(0, 0, 0, 0.8); color: #fff; padding: 8px 16px; border-radius: 999px; font-size: 14px; display: none; z-index: 2000; backdrop-filter: blur(4px); }
-    .empty-row { text-align: center !important; padding: 40px 16px !important; color: var(--muted); font-size: 15px; background: transparent !important; }
+    .saving-status { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(env(safe-area-inset-bottom, 0px) + 16px); background: rgba(0, 0, 0, 0.8); color: #fff; padding: 8px 16px; border-radius: 999px; font-size: 14px; display: none; z-index: 2000; }
+    .empty-row { text-align: center !important; padding: 40px 16px !important; color: var(--muted); font-size: 15px; }
 
-    /* 📱 核心關鍵：針對 iPhone / 手機螢幕全面改為「卡片式清單」，絕不走位 */
     @media (max-width: 768px) {
-      thead { display: none; } /* 隱藏傳統表頭 */
+      thead { display: none; }
       tbody { display: flex; flex-direction: column; gap: 12px; }
       tr { display: block; border: 1px solid var(--line); border-radius: 16px; padding: 8px 4px; box-shadow: var(--shadow); overflow: hidden; }
       td { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; font-size: 15px; border-bottom: 1px solid rgba(60, 60, 67, 0.05); text-align: right; min-height: 44px; }
       td:last-child { border-bottom: none; justify-content: center; padding-top: 12px; }
-      
-      /* 透過 ::before 顯示欄位名稱，確保左文字、右輸入框完美對齊 */
       td::before { content: attr(data-label); font-weight: 600; color: #3a3a3c; text-align: left; min-width: 100px; font-size: 14px; }
-      
       input[type="text"], input[type="number"] { background: #f2f2f7; border: 1px solid transparent; padding: 6px 10px; border-radius: 8px; max-width: 60%; font-size: 15px; }
-      input:focus { background: #e5e5ea; }
       .delete-btn { width: 100%; min-height: 38px; font-size: 15px; }
     }
   </style>
@@ -138,7 +120,6 @@
   <script>
     let localDataCached = [];
     let selectedMonthValue = ""; 
-    // 🌟 你的原有後端網址
     const webAppUrl = "https://script.google.com/macros/s/AKfycbz5q4zQLBg16QKrbBU1q7I5QwVyRUwMKX6k3CCa3mqGLRotnG9OWVSt6Z8L2ZUpxPHB/exec";
     const exchangeRate = 1.1;
 
@@ -166,7 +147,8 @@
       updateSummary(0, 0, 0);
 
       try {
-        const res = await fetch(webAppUrl + "?targetMonth=" + encodeURIComponent(selectedMonthValue));
+        // 🌟 加上隨機數防止 iPhone 瀏覽器頑固的快取快取舊資料
+        const res = await fetch(webAppUrl + "?targetMonth=" + encodeURIComponent(selectedMonthValue) + "&_nocache=" + Date.now());
         const result = await res.json();
 
         if (result.success && Array.isArray(result.data) && result.data.length > 0) {
@@ -174,7 +156,7 @@
           renderInterface();
         } else {
           localDataCached = [];
-          tbody.innerHTML = `<tr><td colspan="9" class="empty-row">📅 ${selectedMonthValue} 無符合的月份紀錄</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="9" class="empty-row">📅 ${selectedMonthValue} 無符合的月份紀錄<br><br><span style="font-size:13px;color:orange;">提示：若是新建立的月份，請點選「➕ 新增項目」直接開始記帳，資料會同步建置到試算表中！</span></td></tr>`;
         }
       } catch (error) {
         console.error("讀取失敗:", error);
@@ -204,7 +186,6 @@
         totalProfit += profitHkd;
 
         const tr = document.createElement("tr");
-        // 🌟 重新校準精準對齊的 data-label 屬性，確保手機版完美渲染不歪斜
         tr.innerHTML = `
           <td data-label="年份月份"><input type="text" value="${date}" onchange="updateField(${index}, 'date', this.value)"></td>
           <td data-label="貨名"><input type="text" value="${name}" onchange="updateField(${index}, 'name', this.value)"></td>
@@ -233,4 +214,55 @@
 
       fetch(webAppUrl + "?action=update&row=" + item.row + "&field=" + field + "&value=" + encodeURIComponent(value), {
         method: "POST",
-        mode:
+        mode: "no-cors"
+      })
+      .then(() => { setTimeout(() => { statusEl.style.display = "none"; }, 800); })
+      .catch(err => { statusEl.innerText = "❌ 儲存失敗"; });
+    }
+
+    function addRow() {
+      const date = prompt(`請確認年份月份`, selectedMonthValue);
+      const name = prompt("請輸入貨名");
+      const price = parseFloat(prompt("價錢"));
+      const qty = parseFloat(prompt("數量"));
+      const cost = parseFloat(prompt("成本"));
+
+      if (date && name && !isNaN(price) && !isNaN(qty) && !isNaN(cost)) {
+        fetch(webAppUrl, {
+          method: "POST",
+          mode: "no-cors",
+          body: JSON.stringify({ date, name, price, qty, cost }),
+          headers: { "Content-Type": "text/plain" }
+        })
+        .then(() => loadData())
+        .catch(err => alert("儲存失敗：" + err));
+      } else {
+        alert("請完整輸入資料");
+      }
+    }
+
+    function deleteRecord(row) {
+      if (confirm("確定要刪除這筆資料嗎？")) {
+        fetch(webAppUrl + "?action=delete&row=" + row, { method: "POST" }).then(() => loadData());
+      }
+    }
+
+    function openSheet() {
+      window.open("https://docs.google.com/spreadsheets/d/1yApB5X49TBWWXnYQmVJVCgHGW8cpax43U43rCGgkBHg/edit?pli=1&gid=0#gid=0", "_blank");
+    }
+
+    window.onload = () => {
+      // 🌟 【修改重點】自動計算並預設查找上一個月份 (Default to previous month)
+      const today = new Date();
+      today.setMonth(today.getMonth() - 1); // 減去一個月
+      
+      const prevYear = today.getFullYear();
+      const prevMonth = String(today.getMonth() + 1).padStart(2, "0");
+      const defaultMonthStr = prevYear + "-" + prevMonth;
+      
+      document.getElementById("monthSelect").value = defaultMonthStr;
+      loadData();
+    };
+  </script>
+</body>
+</html>
