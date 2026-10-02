@@ -24,7 +24,11 @@
     }
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif; }
-    body { padding: calc(var(--topbar-h) + var(--safe-top) + 16px) 12px calc(env(safe-area-inset-bottom, 0px) + 20px); }
+    
+    /* 響應式調整：因為新增了近5月摘要，需要更多空間 */
+    body { padding: calc(var(--topbar-h) + var(--safe-top) + 90px) 12px calc(env(safe-area-inset-bottom, 0px) + 20px); }
+    @media (min-width: 769px) { body { padding-top: calc(var(--topbar-h) + var(--safe-top) + 70px); } }
+
     h1 { margin: 0 0 12px; text-align: center; font-size: 22px; font-weight: 700; color: #000; }
     .topbar { position: fixed; left: 0; right: 0; top: 0; z-index: 1000; padding: calc(var(--safe-top) + 10px) 12px 10px; background: rgba(242, 242, 247, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid var(--line); }
     .summary { background: var(--card-solid); border-radius: 16px; box-shadow: var(--shadow); padding: 12px; border: 1px solid rgba(60, 60, 67, 0.05); }
@@ -36,6 +40,20 @@
     .summary-item.total { background: rgba(0, 122, 255, 0.06); } .summary-item.total strong { color: var(--accent); }
     .summary-item.hkd { background: rgba(255, 149, 0, 0.08); } .summary-item.hkd strong { color: #ff9500; }
     .summary-item.profit { background: rgba(52, 199, 89, 0.08); } .summary-item.profit strong { color: var(--good); }
+    
+    /* 近5個月摘要樣式 */
+    .history-bar { position: fixed; left: 0; right: 0; top: calc(var(--topbar-h) + var(--safe-top)); z-index: 999; background: rgba(242, 242, 247, 0.9); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid var(--line); padding: 8px 0; }
+    .history-scroll { display: flex; gap: 10px; overflow-x: auto; padding: 0 12px; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+    .history-scroll::-webkit-scrollbar { display: none; }
+    .history-card { flex: 0 0 auto; width: 140px; background: var(--card-solid); border: 1px solid var(--line); border-radius: 12px; padding: 8px; box-shadow: var(--shadow); cursor: pointer; transition: all 0.2s; }
+    .history-card.active { border-color: var(--accent); background: rgba(0, 122, 255, 0.05); }
+    .history-card .h-month { font-size: 12px; font-weight: 700; color: var(--text); margin-bottom: 4px; text-align: center; }
+    .history-card .h-vals { display: flex; flex-direction: column; gap: 2px; font-size: 11px; }
+    .history-card .h-vals span { display: flex; justify-content: space-between; color: var(--muted); }
+    .history-card .h-vals strong { font-weight: 600; }
+    .history-card.loading .h-vals { height: 36px; background: linear-gradient(90deg, #eee 25%, #ddd 50%, #eee 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 4px; margin-top: 4px; }
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
     .controls { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
     .controls input[type="month"] { width: 100%; min-height: 46px; border-radius: 12px; border: 1px solid var(--line); font-size: 17px; padding: 10px 12px; background: var(--card-solid); color: #000; text-align: center; -webkit-appearance: none; }
     .action-row { display: flex; gap: 10px; }
@@ -60,6 +78,19 @@
     .delete-btn { background: rgba(255, 59, 48, 0.08); color: var(--danger); border: none; padding: 6px 12px; border-radius: 8px; font-size: 14px; font-weight: 600; }
     .saving-status { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(env(safe-area-inset-bottom, 0px) + 16px); background: rgba(0, 0, 0, 0.8); color: #fff; padding: 8px 16px; border-radius: 999px; font-size: 14px; display: none; z-index: 2000; }
     .empty-row { text-align: center !important; padding: 40px 16px !important; color: var(--muted); font-size: 15px; }
+
+    /* 自定義新增 Modal */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 3000; display: none; justify-content: center; align-items: flex-end; }
+    .modal-overlay.show { display: flex; }
+    .modal-content { background: var(--card-solid); width: 100%; max-width: 500px; border-radius: 16px 16px 0 0; padding: 20px; max-height: 80vh; overflow-y: auto; }
+    .modal-content h3 { margin: 0 0 16px; text-align: center; }
+    .modal-field { margin-bottom: 12px; }
+    .modal-field label { display: block; font-size: 13px; font-weight: 600; color: var(--muted); margin-bottom: 4px; }
+    .modal-field input { width: 100%; padding: 10px; border: 1px solid var(--line); border-radius: 8px; font-size: 16px; background: var(--bg); }
+    .modal-actions { display: flex; gap: 10px; margin-top: 20px; }
+    .modal-actions button { flex: 1; padding: 12px; border-radius: 12px; font-size: 16px; font-weight: 600; border: none; }
+    .modal-cancel { background: rgba(142, 142, 147, 0.15); color: var(--text); }
+    .modal-confirm { background: var(--accent); color: #fff; }
 
     @media (max-width: 768px) {
       thead { display: none; }
@@ -86,12 +117,17 @@
     </div>
   </div>
 
+  <!-- 近5個月摘要區域 -->
+  <div class="history-bar">
+    <div class="history-scroll" id="historyScroll"></div>
+  </div>
+
   <h1>每月零件紀錄表</h1>
 
   <div class="controls">
     <input type="month" id="monthSelect" onchange="loadData()" />
     <div class="action-row">
-      <button class="btn-add" onclick="addRow()">➕ 新增項目</button>
+      <button class="btn-add" onclick="openAddModal()">➕ 新增項目</button>
       <button class="btn-sheet" onclick="openSheet()">📊 開啟試算表</button>
     </div>
   </div>
@@ -117,9 +153,43 @@
 
   <div id="savingStatus" class="saving-status">💾 自動儲存中...</div>
 
+  <!-- 新增項目 Modal -->
+  <div class="modal-overlay" id="addModal">
+    <div class="modal-content">
+      <h3>新增零件紀錄</h3>
+      <div class="modal-field">
+        <label>年份月份</label>
+        <input type="text" id="mDate" />
+      </div>
+      <div class="modal-field">
+        <label>貨名</label>
+        <input type="text" id="mName" placeholder="請輸入貨名"/>
+      </div>
+      <div class="modal-field">
+        <label>價錢</label>
+        <input type="number" id="mPrice" placeholder="0" step="0.01"/>
+      </div>
+      <div class="modal-field">
+        <label>數量</label>
+        <input type="number" id="mQty" placeholder="0" step="1"/>
+      </div>
+      <div class="modal-field">
+        <label>成本</label>
+        <input type="number" id="mCost" placeholder="0" step="0.01"/>
+      </div>
+      <div class="modal-actions">
+        <button class="modal-cancel" onclick="closeAddModal()">取消</button>
+        <button class="modal-confirm" onclick="submitAddModal()">確認新增</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     let localDataCached = [];
     let selectedMonthValue = ""; 
+    let historyCache = {}; // 快取歷史數據避免重複請求
+    let debounceTimer = null; // 防抖計時器
+
     const webAppUrl = "https://script.google.com/macros/s/AKfycbz5q4zQLBg16QKrbBU1q7I5QwVyRUwMKX6k3CCa3mqGLRotnG9OWVSt6Z8L2ZUpxPHB/exec";
     const exchangeRate = 1.1;
 
@@ -129,7 +199,8 @@
 
     function formatMoney(value) {
       const n = Number(value) || 0;
-      return n.toFixed(2).replace(/\.?0+$/, "");
+      // 優化：保留至少兩位小數，但去除多餘的0，0值顯示為0
+      return n === 0 ? "0" : n.toFixed(2).replace(/\.?0+$/, "");
     }
 
     function updateSummary(totalSum, totalCost, totalProfit) {
@@ -138,24 +209,119 @@
       document.getElementById("summaryProfit").innerText = `$${formatMoney(totalProfit)}`;
     }
 
+    async function fetchMonthData(month) {
+      // 如果快取中有，直接返回
+      if (historyCache[month]) return historyCache[month];
+      
+      try {
+        const res = await fetch(webAppUrl + "?targetMonth=" + encodeURIComponent(month) + "&_nocache=" + Date.now());
+        const result = await res.json();
+        if (result.success && Array.isArray(result.data)) {
+          historyCache[month] = result.data;
+          return result.data;
+        }
+        return [];
+      } catch (error) {
+        console.error("讀取歷史失敗:", error);
+        return [];
+      }
+    }
+
+    // 計算單一月份的摘要
+    function calculateMonthSummary(data) {
+      let totalSum = 0, totalCost = 0, totalProfit = 0;
+      data.forEach(item => {
+        const price = Number(item.price) || 0;
+        const qty = Number(item.qty) || 0;
+        const cost = Number(item.cost) || 0;
+        const totalRmb = price * qty;
+        const costRmb = cost * qty;
+        const profitHkd = (totalRmb - costRmb) * exchangeRate;
+        totalSum += totalRmb;
+        totalCost += costRmb;
+        totalProfit += profitHkd;
+      });
+      return { totalSum, totalCost, totalProfit };
+    }
+
+    // 初始化並加載近5個月摘要
+    async function loadHistoryBar() {
+      const container = document.getElementById("historyScroll");
+      container.innerHTML = "";
+      
+      const today = new Date();
+      const monthsToFetch = [];
+
+      // 生成近5個月的 key (包含本月)
+      for (let i = 0; i < 5; i++) {
+        const d = new Date(today.getFullYear(), today.getMonth() - i, 1);
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, "0");
+        monthsToFetch.push(`${y}-${m}`);
+      }
+
+      // 先渲染骨架屏
+      monthsToFetch.forEach(m => {
+        const card = document.createElement("div");
+        card.className = "history-card loading";
+        card.id = `hist-${m}`;
+        card.innerHTML = `<div class="h-month">${m}</div><div class="h-vals"></div>`;
+        card.onclick = () => { document.getElementById("monthSelect").value = m; loadData(); };
+        container.appendChild(card);
+      });
+
+      // 異步獲取數據並更新卡片
+      for (const m of monthsToFetch) {
+        const data = await fetchMonthData(m);
+        const card = document.getElementById(`hist-${m}`);
+        if (card) {
+          card.classList.remove("loading");
+          if (m === selectedMonthValue) card.classList.add("active");
+          
+          if (data.length === 0) {
+            card.innerHTML = `<div class="h-month">${m}</div><div class="h-vals" style="font-size:11px;color:var(--muted);">無數據</div>`;
+          } else {
+            const summary = calculateMonthSummary(data);
+            card.innerHTML = `
+              <div class="h-month">${m}</div>
+              <div class="h-vals">
+                <span>人民幣 <strong style="color:var(--accent)">¥${formatMoney(summary.totalSum)}</strong></span>
+                <span>成本 <strong style="color:#ff9500">¥${formatMoney(summary.totalCost)}</strong></span>
+                <span>賺取 <strong style="color:var(--good)">$${formatMoney(summary.totalProfit)}</strong></span>
+              </div>
+            `;
+          }
+        }
+      }
+    }
+
     async function loadData() {
       selectedMonthValue = document.getElementById("monthSelect").value;
       if (!selectedMonthValue) return;
+
+      // 更新歷史卡片的 Active 狀態
+      document.querySelectorAll(".history-card").forEach(c => c.classList.toggle("active", c.id === `hist-${selectedMonthValue}`));
 
       const tbody = document.querySelector("#dataTable tbody");
       tbody.innerHTML = `<tr><td colspan="9" class="empty-row">🔄 正在讀取 ${selectedMonthValue} 的資料...</td></tr>`;
       updateSummary(0, 0, 0);
 
       try {
-        // 🌟 加上隨機數防止 iPhone 瀏覽器頑固的快取快取舊資料
-        const res = await fetch(webAppUrl + "?targetMonth=" + encodeURIComponent(selectedMonthValue) + "&_nocache=" + Date.now());
-        const result = await res.json();
+        // 優先從快取讀取，否則發起請求
+        if (!historyCache[selectedMonthValue]) {
+          const res = await fetch(webAppUrl + "?targetMonth=" + encodeURIComponent(selectedMonthValue) + "&_nocache=" + Date.now());
+          const result = await res.json();
+          if (result.success && Array.isArray(result.data)) {
+            historyCache[selectedMonthValue] = result.data;
+          } else {
+            historyCache[selectedMonthValue] = [];
+          }
+        }
 
-        if (result.success && Array.isArray(result.data) && result.data.length > 0) {
-          localDataCached = result.data;
+        localDataCached = historyCache[selectedMonthValue];
+        if (localDataCached.length > 0) {
           renderInterface();
         } else {
-          localDataCached = [];
           tbody.innerHTML = `<tr><td colspan="9" class="empty-row">📅 ${selectedMonthValue} 無符合的月份紀錄<br><br><span style="font-size:13px;color:orange;">提示：若是新建立的月份，請點選「➕ 新增項目」直接開始記帳，資料會同步建置到試算表中！</span></td></tr>`;
         }
       } catch (error) {
@@ -168,7 +334,7 @@
       const tbody = document.querySelector("#dataTable tbody");
       tbody.innerHTML = "";
 
-      let totalSum = 0; let totalCost = 0; let totalProfit = 0;
+      let totalSum = 0, totalCost = 0, totalProfit = 0;
 
       localDataCached.forEach((item, index) => {
         const date = escapeHtml(item.date || "");
@@ -187,12 +353,12 @@
 
         const tr = document.createElement("tr");
         tr.innerHTML = `
-          <td data-label="年份月份"><input type="text" value="${date}" onchange="updateField(${index}, 'date', this.value)"></td>
-          <td data-label="貨名"><input type="text" value="${name}" onchange="updateField(${index}, 'name', this.value)"></td>
-          <td data-label="價錢"><input type="number" value="${price}" onchange="updateField(${index}, 'price', this.value)"></td>
-          <td data-label="數量"><input type="number" value="${qty}" onchange="updateField(${index}, 'qty', this.value)"></td>
+          <td data-label="年份月份"><input type="text" value="${date}" oninput="debounceUpdate(${index}, 'date', this.value)"></td>
+          <td data-label="貨名"><input type="text" value="${name}" oninput="debounceUpdate(${index}, 'name', this.value)"></td>
+          <td data-label="價錢"><input type="number" value="${price}" oninput="debounceUpdate(${index}, 'price', this.value)"></td>
+          <td data-label="數量"><input type="number" value="${qty}" oninput="debounceUpdate(${index}, 'qty', this.value)"></td>
           <td data-label="人民幣(總)" class="calculated rmb-cell">¥${formatMoney(totalRmb)}</td>
-          <td data-label="成本(單個)"><input type="number" value="${cost}" onchange="updateField(${index}, 'cost', this.value)"></td>
+          <td data-label="成本(單個)"><input type="number" value="${cost}" oninput="debounceUpdate(${index}, 'cost', this.value)"></td>
           <td data-label="成本(人民幣)" class="calculated cost-cell">¥${formatMoney(costRmb)}</td>
           <td data-label="賺取(港幣)" class="calculated profit-cell">$${formatMoney(profitHkd)}</td>
           <td data-label="操作"><button class="delete-btn" onclick="deleteRecord(${item.row})">刪除</button></td>
@@ -201,40 +367,67 @@
       });
 
       updateSummary(totalSum, totalCost, totalProfit);
+      
+      // 同步更新快取與歷史卡片
+      historyCache[selectedMonthValue] = localDataCached;
+      loadHistoryBar(); 
     }
 
-    function updateField(dataIndex, field, value) {
+    // 防抖更新函數
+    function debounceUpdate(dataIndex, field, value) {
       const item = localDataCached[dataIndex];
       item[field] = value;
+      
+      // 先即時渲染介面計算結果
       renderInterface();
 
+      clearTimeout(debounceTimer);
       const statusEl = document.getElementById("savingStatus");
-      statusEl.innerText = "💾 自動儲存中...";
+      statusEl.innerText = "⏳ 等待輸入完成...";
       statusEl.style.display = "block";
 
-      fetch(webAppUrl + "?action=update&row=" + item.row + "&field=" + field + "&value=" + encodeURIComponent(value), {
-        method: "POST",
-        mode: "no-cors"
-      })
-      .then(() => { setTimeout(() => { statusEl.style.display = "none"; }, 800); })
-      .catch(err => { statusEl.innerText = "❌ 儲存失敗"; });
+      debounceTimer = setTimeout(() => {
+        statusEl.innerText = "💾 自動儲存中...";
+        fetch(webAppUrl + "?action=update&row=" + item.row + "&field=" + field + "&value=" + encodeURIComponent(value), {
+          method: "POST"
+        })
+        .then(() => { setTimeout(() => { statusEl.style.display = "none"; }, 800); })
+        .catch(err => { statusEl.innerText = "❌ 儲存失敗"; });
+      }, 800);
     }
 
-    function addRow() {
-      const date = prompt(`請確認年份月份`, selectedMonthValue);
-      const name = prompt("請輸入貨名");
-      const price = parseFloat(prompt("價錢"));
-      const qty = parseFloat(prompt("數量"));
-      const cost = parseFloat(prompt("成本"));
+    function openAddModal() {
+      document.getElementById("mDate").value = selectedMonthValue;
+      document.getElementById("mName").value = "";
+      document.getElementById("mPrice").value = "";
+      document.getElementById("mQty").value = "";
+      document.getElementById("mCost").value = "";
+      document.getElementById("addModal").classList.add("show");
+    }
+
+    function closeAddModal() {
+      document.getElementById("addModal").classList.remove("show");
+    }
+
+    function submitAddModal() {
+      const date = document.getElementById("mDate").value;
+      const name = document.getElementById("mName").value;
+      const price = parseFloat(document.getElementById("mPrice").value);
+      const qty = parseFloat(document.getElementById("mQty").value);
+      const cost = parseFloat(document.getElementById("mCost").value);
 
       if (date && name && !isNaN(price) && !isNaN(qty) && !isNaN(cost)) {
+        closeAddModal();
+        // 移除 no-cors 以便獲取真實狀態
         fetch(webAppUrl, {
           method: "POST",
-          mode: "no-cors",
           body: JSON.stringify({ date, name, price, qty, cost }),
           headers: { "Content-Type": "text/plain" }
         })
-        .then(() => loadData())
+        .then(() => { 
+          delete historyCache[selectedMonthValue]; // 清除快取強制重新拉取
+          loadData(); 
+        })
         .catch(err => alert("儲存失敗：" + err));
       } else {
         alert("請完整輸入資料");
@@ -243,7 +436,10 @@
 
     function deleteRecord(row) {
       if (confirm("確定要刪除這筆資料嗎？")) {
-        fetch(webAppUrl + "?action=delete&row=" + row, { method: "POST" }).then(() => loadData());
+        fetch(webAppUrl + "?action=delete&row=" + row, { method: "POST" }).then(() => {
+          delete historyCache[selectedMonthValue];
+          loadData();
+        });
       }
     }
 
@@ -252,17 +448,24 @@
     }
 
     window.onload = () => {
-      // 🌟 【修改重點】自動計算並預設查找上一個月份 (Default to previous month)
       const today = new Date();
-      today.setMonth(today.getMonth() - 1); // 減去一個月
+      today.setMonth(today.getMonth() - 1); // 預設上個月
       
       const prevYear = today.getFullYear();
       const prevMonth = String(today.getMonth() + 1).padStart(2, "0");
       const defaultMonthStr = prevYear + "-" + prevMonth;
       
       document.getElementById("monthSelect").value = defaultMonthStr;
+      selectedMonthValue = defaultMonthStr;
+      
       loadData();
+      loadHistoryBar(); // 啟動近5月摘要加載
     };
+
+    // 點擊 Modal 遮罩關閉
+    document.getElementById("addModal").addEventListener('click', function(e) {
+      if (e.target === this) closeAddModal();
+    });
   </script>
 </body>
 </html>
