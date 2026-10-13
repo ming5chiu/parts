@@ -22,44 +22,38 @@
     }
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif; }
-    
-    /* 動態計算 Topbar 高度避免擋版 */
-    body { padding: calc(var(--safe-top) + 185px) 12px calc(env(safe-area-inset-bottom, 0px) + 24px); }
-    @media (min-width: 769px) { body { padding-top: calc(var(--safe-top) + 160px); } }
+    body { padding: calc(var(--safe-top) + 150px) 12px calc(env(safe-area-inset-bottom, 0px) + 24px); }
 
     /* 頂部懸浮區域 */
-    .topbar { position: fixed; left: 0; right: 0; top: 0; z-index: 1000; padding: calc(var(--safe-top) + 8px) 12px 12px; background: rgba(242, 242, 247, 0.92); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid var(--line); }
+    .topbar { position: fixed; left: 0; right: 0; top: 0; z-index: 1000; padding: calc(var(--safe-top) + 8px) 12px 8px; background: rgba(242, 242, 247, 0.92); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid var(--line); }
     
     /* 歷史月份摘要樣式 */
-    .history-scroll { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 4px; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+    .history-scroll { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 4px; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
     .history-scroll::-webkit-scrollbar { display: none; }
-    .history-card { flex: 0 0 auto; width: 150px; background: var(--card-solid); border: 1px solid var(--line); border-radius: 16px; padding: 12px; box-shadow: var(--shadow); cursor: pointer; transition: all 0.2s ease; }
+    .history-card { flex: 0 0 auto; width: 130px; background: var(--card-solid); border: 1px solid var(--line); border-radius: 14px; padding: 10px; box-shadow: var(--shadow); cursor: pointer; transition: all 0.2s ease; }
     .history-card:active { transform: scale(0.97); }
-    .history-card.active { border-color: var(--accent); background: rgba(0, 122, 255, 0.04); box-shadow: 0 2px 12px rgba(0, 122, 255, 0.1); }
-    .history-card .h-month { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 8px; text-align: center; letter-spacing: 0.5px; }
+    .history-card.active { border-color: var(--accent); background: rgba(0, 122, 255, 0.04); }
+    .history-card .h-month { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 6px; text-align: center; }
     .history-card.active .h-month { color: var(--accent); }
-    .history-card .h-vals { display: flex; flex-direction: column; gap: 4px; }
-    .history-card .h-row { display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: var(--muted); }
-    .history-card .h-row strong { font-size: 13px; font-weight: 600; color: var(--text); }
+    .history-card .h-vals { display: flex; flex-direction: column; gap: 3px; }
+    .history-card .h-row { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); }
+    .history-card .h-row strong { font-size: 12px; font-weight: 600; color: var(--text); }
     .history-card .h-row.icon-rmb strong { color: var(--accent); }
     .history-card .h-row.icon-cost strong { color: #ff9500; }
     .history-card .h-row.icon-profit strong { color: var(--good); }
     .history-card .h-row.icon-profit.negative strong { color: var(--danger); }
-    
-    /* 骨架屏動畫 */
-    .history-card.loading .h-vals { height: 50px; background: linear-gradient(90deg, #eee 25%, #ddd 50%, #eee 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 6px; margin-top: 4px; }
+    .history-card.loading .h-vals { height: 40px; background: linear-gradient(90deg, #eee 25%, #ddd 50%, #eee 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 6px; margin-top: 4px; }
     @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
     /* 控制區 */
     .controls { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
-    .controls input[type="month"] { width: 100%; min-height: 46px; border-radius: 12px; border: 1px solid var(--line); font-size: 17px; font-weight: 500; padding: 10px 12px; background: var(--card-solid); color: #000; text-align: center; -webkit-appearance: none; }
+    .controls input[type="month"] { width: 100%; min-height: 44px; border-radius: 12px; border: 1px solid var(--line); font-size: 16px; font-weight: 500; padding: 8px 12px; background: var(--card-solid); color: #000; text-align: center; -webkit-appearance: none; }
     .action-row { display: flex; gap: 10px; }
-    .action-row button { flex: 1; min-height: 46px; border-radius: 12px; font-size: 16px; font-weight: 600; border: none; transition: opacity 0.2s; }
-    .action-row button:active { opacity: 0.7; }
+    .action-row button { flex: 1; min-height: 44px; border-radius: 12px; font-size: 15px; font-weight: 600; border: none; }
     .btn-add { background: var(--accent); color: #fff; box-shadow: 0 4px 12px rgba(0,122,255,0.15); }
     .btn-sheet { background: rgba(142, 142, 147, 0.12); color: var(--text); }
     
-    /* 表格與卡片樣式 */
+    /* 桌面版 Table 佈局 */
     .table-wrap { width: 100%; }
     table { width: 100%; border-collapse: collapse; }
     thead { display: table-header-group; }
@@ -76,15 +70,14 @@
     .cost-cell { color: #ff9500; }
     .profit-cell { color: var(--good); font-weight: 700; }
     .profit-negative { color: var(--danger); font-weight: 700; }
-    .delete-btn { background: rgba(255, 59, 48, 0.06); color: var(--danger); border: none; padding: 6px 12px; border-radius: 8px; font-size: 14px; font-weight: 600; transition: background 0.2s; }
-    .delete-btn:active { background: rgba(255, 59, 48, 0.15); }
-    .saving-status { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(env(safe-area-inset-bottom, 0px) + 24px); background: rgba(0, 0, 0, 0.8); color: #fff; padding: 8px 20px; border-radius: 999px; font-size: 14px; display: none; z-index: 2000; backdrop-filter: blur(10px); }
+    .delete-btn { background: rgba(255, 59, 48, 0.06); color: var(--danger); border: none; padding: 6px 12px; border-radius: 8px; font-size: 14px; font-weight: 600; }
+    .saving-status { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(env(safe-area-inset-bottom, 0px) + 24px); background: rgba(0, 0, 0, 0.8); color: #fff; padding: 8px 20px; border-radius: 999px; font-size: 14px; display: none; z-index: 2000; }
     .empty-row { text-align: center !important; padding: 50px 16px !important; color: var(--muted); font-size: 15px; }
 
-    /* 自定義新增 Modal (iOS Sheet 風格) */
+    /* Modal 彈窗 */
     .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 3000; display: none; justify-content: center; align-items: flex-end; backdrop-filter: blur(4px); }
     .modal-overlay.show { display: flex; }
-    .modal-content { background: var(--bg); width: 100%; max-width: 500px; border-radius: 20px 20px 0 0; padding: 20px; max-height: 85vh; overflow-y: auto; }
+    .modal-content { background: var(--bg); width: 100%; max-width: 500px; border-radius: 20px 20px 0 0; padding: 20px; }
     .modal-content h3 { margin: 0 0 20px; text-align: center; font-size: 18px; }
     .modal-field { margin-bottom: 16px; }
     .modal-field label { display: block; font-size: 13px; font-weight: 600; color: var(--muted); margin-bottom: 6px; padding-left: 4px; }
@@ -92,19 +85,35 @@
     .modal-actions { display: flex; gap: 12px; margin-top: 24px; }
     .modal-actions button { flex: 1; padding: 14px; border-radius: 12px; font-size: 16px; font-weight: 600; border: none; }
     .modal-cancel { background: rgba(142, 142, 147, 0.12); color: var(--text); }
-    .modal-confirm { background: var(--accent); color: #fff; box-shadow: 0 4px 12px rgba(0,122,255,0.15); }
+    .modal-confirm { background: var(--accent); color: #fff; }
 
-    /* 手機端響應式佈局 */
+    /* 🌟 手機版折疊卡片佈局 🌟 */
     @media (max-width: 768px) {
       thead { display: none; }
-      tbody { display: flex; flex-direction: column; gap: 12px; }
-      tr { display: block; border: none; border-radius: 16px; padding: 12px; box-shadow: var(--shadow); background: var(--card-solid); overflow: hidden; }
-      td { display: flex; align-items: center; justify-content: space-between; padding: 10px 4px; font-size: 15px; border-bottom: 1px solid rgba(60, 60, 67, 0.05); text-align: right; min-height: 44px; }
-      td:last-child { border-bottom: none; justify-content: center; padding-top: 16px; }
-      /* 優化標籤視覺 */
-      td::before { content: attr(data-label); font-weight: 600; color: #636366; text-align: left; min-width: 90px; font-size: 13px; background: rgba(142, 142, 147, 0.08); padding: 4px 8px; border-radius: 6px; margin-right: 12px; }
-      input[type="text"], input[type="number"] { background: var(--bg); border: 1px solid transparent; padding: 8px 10px; border-radius: 8px; max-width: 65%; font-size: 15px; }
-      .delete-btn { width: 100%; min-height: 40px; font-size: 15px; border-radius: 10px; }
+      tbody { display: flex; flex-direction: column; gap: 10px; }
+      tr { display: block; border: none; border-radius: 14px; background: var(--card-solid); box-shadow: var(--shadow); overflow: hidden; }
+      
+      /* 隱藏所有 td，由 JS 控制折疊 */
+      td { display: none; padding: 0; margin: 0; border: none; }
+      
+      /* 核心資訊永遠顯示 */
+      td.mobile-main { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; cursor: pointer; }
+      .mobile-info { display: flex; flex-direction: column; gap: 2px; }
+      .mobile-title { font-size: 15px; font-weight: 600; color: var(--text); }
+      .mobile-subtitle { font-size: 12px; color: var(--muted); }
+      .mobile-total { font-size: 17px;%20font-weight:%20700;%20color:%20var(--accent);%20text-align:%20right;%20}
+      .mobile-total%20span%20{%20display:%20block;%20font-size:%2011px;%20font-weight:%20500;%20color:%20var(--muted);%20margin-bottom:%202px;%20}
+      .chevron%20{%20color:%20var(--muted);%20font-size:%2014px;%20margin-left:%208px;%20transition:%20transform%200.2s;%20}
+      tr.expanded%20.chevron%20{%20transform:%20rotate(90deg);%20}
+
+      /* 展開後的詳細資訊 */
+      tr.expanded td.mobile-detail { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; border-top: 1px solid var(--line); font-size: 14px; }
+      tr.expanded td.mobile-detail::before { content: attr(data-label); font-weight: 600; color: #636366; font-size: 13px; }
+      tr.expanded td.mobile-detail input { background: var(--bg); border: 1px solid transparent; padding: 6px 10px; border-radius: 8px; max-width: 60%; font-size: 14px; text-align: right; }
+      tr.expanded td.mobile-detail input:focus { border-color: rgba(0,122,255,0.3); }
+      
+      tr.expanded td.mobile-actions { display: flex; justify-content: center; padding: 12px 16px; border-top: 1px solid var(--line); }
+      .delete-btn { width: 100%; min-height: 40px; font-size: 14px; border-radius: 10px; }
     }
   </style>
 </head>
@@ -143,30 +152,14 @@
 
   <div id="savingStatus" class="saving-status">💾 自動儲存中...</div>
 
-  <!-- 新增項目 Modal -->
   <div class="modal-overlay" id="addModal">
     <div class="modal-content">
       <h3>新增零件紀錄</h3>
-      <div class="modal-field">
-        <label>年份月份</label>
-        <input type="text" id="mDate" />
-      </div>
-      <div class="modal-field">
-        <label>貨名</label>
-        <input type="text" id="mName" placeholder="請輸入貨名"/>
-      </div>
-      <div class="modal-field">
-        <label>價錢</label>
-        <input type="number" id="mPrice" placeholder="0" inputmode="decimal" step="0.01"/>
-      </div>
-      <div class="modal-field">
-        <label>數量</label>
-        <input type="number" id="mQty" placeholder="0" inputmode="numeric" step="1"/>
-      </div>
-      <div class="modal-field">
-        <label>成本</label>
-        <input type="number" id="mCost" placeholder="0" inputmode="decimal" step="0.01"/>
-      </div>
+      <div class="modal-field"><label>年份月份</label><input type="text" id="mDate" /></div>
+      <div class="modal-field"><label>貨名</label><input type="text" id="mName" placeholder="請輸入貨名"/></div>
+      <div class="modal-field"><label>價錢</label><input type="number" id="mPrice" placeholder="0" inputmode="decimal"/></div>
+      <div class="modal-field"><label>數量</label><input type="number" id="mQty" placeholder="0" inputmode="numeric"/></div>
+      <div class="modal-field"><label>成本</label><input type="number" id="mCost" placeholder="0" inputmode="decimal"/></div>
       <div class="modal-actions">
         <button class="modal-cancel" onclick="closeAddModal()">取消</button>
         <button class="modal-confirm" onclick="submitAddModal()">確認新增</button>
@@ -202,10 +195,7 @@
           return result.data;
         }
         return [];
-      } catch (error) {
-        console.error("讀取歷史失敗:", error);
-        return [];
-      }
+      } catch (error) { return []; }
     }
 
     function calculateMonthSummary(data) {
@@ -214,12 +204,9 @@
         const price = Number(item.price) || 0;
         const qty = Number(item.qty) || 0;
         const cost = Number(item.cost) || 0;
-        const totalRmb = price * qty;
-        const costRmb = cost * qty;
-        const profitHkd = (totalRmb - costRmb) * exchangeRate;
-        totalSum += totalRmb;
-        totalCost += costRmb;
-        totalProfit += profitHkd;
+        totalSum += price * qty;
+        totalCost += cost * qty;
+        totalProfit += (price * qty - cost * qty) * exchangeRate;
       });
       return { totalSum, totalCost, totalProfit };
     }
@@ -229,43 +216,29 @@
       container.innerHTML = "";
       const today = new Date();
       const monthsToFetch = [];
-
       for (let i = 0; i < 5; i++) {
         const d = new Date(today.getFullYear(), today.getMonth() - i, 1);
-        const y = d.getFullYear();
-        const m = String(d.getMonth() + 1).padStart(2, "0");
-        monthsToFetch.push(`${y}-${m}`);
+        monthsToFetch.push(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`);
       }
-
       monthsToFetch.forEach(m => {
         const card = document.createElement("div");
-        card.className = "history-card loading";
-        card.id = `hist-${m}`;
+        card.className = "history-card loading"; card.id = `hist-${m}`;
         card.innerHTML = `<div class="h-month">${m}</div><div class="h-vals"></div>`;
         card.onclick = () => { document.getElementById("monthSelect").value = m; loadData(); };
         container.appendChild(card);
       });
-
       for (const m of monthsToFetch) {
         const data = await fetchMonthData(m);
         const card = document.getElementById(`hist-${m}`);
         if (card) {
           card.classList.remove("loading");
           if (m === selectedMonthValue) card.classList.add("active");
-          
           if (data.length === 0) {
-            card.innerHTML = `<div class="h-month">${m}</div><div class="h-vals" style="font-size:12px;color:var(--muted);text-align:center;padding-top:8px;">無數據</div>`;
+            card.innerHTML = `<div class="h-month">${m}</div><div class="h-vals" style="font-size:12px;color:var(--muted);text-align:center;padding-top:4px;">無數據</div>`;
           } else {
             const summary = calculateMonthSummary(data);
             const profitClass = summary.totalProfit < 0 ? 'icon-profit negative' : 'icon-profit';
-            card.innerHTML = `
-              <div class="h-month">${m}</div>
-              <div class="h-vals">
-                <div class="h-row icon-rmb"><span>🪙 人民幣</span> <strong>¥${formatMoney(summary.totalSum)}</strong></div>
-                <div class="h-row icon-cost"><span>🧧 成本</span> <strong>¥${formatMoney(summary.totalCost)}</strong></div>
-                <div class="h-row ${profitClass}"><span>💰 賺取</span> <strong>$${formatMoney(summary.totalProfit)}</strong></div>
-              </div>
-            `;
+            card.innerHTML = `<div class="h-month">${m}</div><div class="h-vals"><div class="h-row icon-rmb"><span>🪙 人民幣</span> <strong>¥${formatMoney(summary.totalSum)}</strong></div><div class="h-row icon-cost"><span>🧧 成本</span> <strong>¥${formatMoney(summary.totalCost)}</strong></div><div class="h-row ${profitClass}"><span>💰 賺取</span> <strong>$${formatMoney(summary.totalProfit)}</strong></div></div>`;
           }
         }
       }
@@ -274,34 +247,25 @@
     async function loadData() {
       selectedMonthValue = document.getElementById("monthSelect").value;
       if (!selectedMonthValue) return;
-
       document.querySelectorAll(".history-card").forEach(c => c.classList.toggle("active", c.id === `hist-${selectedMonthValue}`));
-
       const tbody = document.querySelector("#dataTable tbody");
       tbody.innerHTML = `<tr><td colspan="9" class="empty-row">🔄 正在讀取 ${selectedMonthValue} 的資料...</td></tr>`;
-
       try {
         if (!historyCache[selectedMonthValue]) {
           const res = await fetch(webAppUrl + "?targetMonth=" + encodeURIComponent(selectedMonthValue) + "&_nocache=" + Date.now());
           const result = await res.json();
           historyCache[selectedMonthValue] = (result.success && Array.isArray(result.data)) ? result.data : [];
         }
-
         localDataCached = historyCache[selectedMonthValue];
-        if (localDataCached.length > 0) {
-          renderInterface();
-        } else {
-          tbody.innerHTML = `<tr><td colspan="9" class="empty-row">📅 ${selectedMonthValue} 無符合的月份紀錄<br><br><span style="font-size:13px;color:#ff9500;">提示：若是新建立的月份，請點選「➕ 新增項目」直接開始記帳</span></td></tr>`;
-        }
-      } catch (error) {
-        console.error("讀取失敗:", error);
-        tbody.innerHTML = `<tr><td colspan="9" class="empty-row">❌ 讀取失敗，請檢查網絡</td></tr>`;
-      }
+        if (localDataCached.length > 0) { renderInterface(); } 
+        else { tbody.innerHTML = `<tr><td colspan="9" class="empty-row">📅 ${selectedMonthValue} 無符合的月份紀錄<br><span style="font-size:13px;color:#ff9500;">提示：請點選「➕ 新增項目」開始記帳</span></td></tr>`; }
+      } catch (error) { tbody.innerHTML = `<tr><td colspan="9" class="empty-row">❌ 讀取失敗</td></tr>`; }
     }
 
     function renderInterface() {
       const tbody = document.querySelector("#dataTable tbody");
       tbody.innerHTML = "";
+      const isMobile = window.innerWidth <= 768;
 
       localDataCached.forEach((item, index) => {
         const date = escapeHtml(item.date || "");
@@ -309,27 +273,52 @@
         const price = Number(item.price) || 0;
         const qty = Number(item.qty) || 0;
         const cost = Number(item.cost) || 0;
-
         const totalRmb = price * qty;
         const costRmb = cost * qty;
         const profitHkd = (totalRmb - costRmb) * exchangeRate;
         const profitClass = profitHkd < 0 ? "calculated profit-negative" : "calculated profit-cell";
 
         const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td data-label="年份月份"><input type="text" value="${date}" oninput="debounceUpdate(${index}, 'date', this.value)"></td>
-          <td data-label="貨名"><input type="text" value="${name}" oninput="debounceUpdate(${index}, 'name', this.value)"></td>
-          <td data-label="價錢"><input type="number" value="${price}" inputmode="decimal" oninput="debounceUpdate(${index}, 'price', this.value)"></td>
-          <td data-label="數量"><input type="number" value="${qty}" inputmode="numeric" oninput="debounceUpdate(${index}, 'qty', this.value)"></td>
-          <td data-label="人民幣(總)" class="calculated rmb-cell">¥${formatMoney(totalRmb)}</td>
-          <td data-label="成本(單個)"><input type="number" value="${cost}" inputmode="decimal" oninput="debounceUpdate(${index}, 'cost', this.value)"></td>
-          <td data-label="成本(人民幣)" class="calculated cost-cell">¥${formatMoney(costRmb)}</td>
-          <td data-label="賺取(港幣)" class="${profitClass}">$${formatMoney(profitHkd)}</td>
-          <td data-label="操作"><button class="delete-btn" onclick="deleteRecord(${item.row})">刪除</button></td>
-        `;
+        
+        if (isMobile) {
+          // 🌟 手機版：折疊卡片
+          tr.onclick = (e) => { if(!e.target.closest('input') && !e.target.closest('button')) tr.classList.toggle('expanded'); };
+          tr.innerHTML = `
+            <td class="mobile-main">
+              <div class="mobile-info">
+                <div class="mobile-title">${name || '未命名'}</div>
+                <div class="mobile-subtitle">${date} · 單價 ¥${formatMoney(price)} × ${qty}</div>
+              </div>
+              <div style="display:flex;align-items:center;">
+                <div class="mobile-total"><span>人民幣(總)</span>¥${formatMoney(totalRmb)}</div>
+                <div class="chevron">▶</div>
+              </div>
+            </td>
+            <td class="mobile-detail" data-label="貨名"><input type="text" value="${name}" oninput="debounceUpdate(${index}, 'name', this.value)"></td>
+            <td class="mobile-detail" data-label="年份月份"><input type="text" value="${date}" oninput="debounceUpdate(${index}, 'date', this.value)"></td>
+            <td class="mobile-detail" data-label="價錢"><input type="number" value="${price}" inputmode="decimal" oninput="debounceUpdate(${index}, 'price', this.value)"></td>
+            <td class="mobile-detail" data-label="數量"><input type="number" value="${qty}" inputmode="numeric" oninput="debounceUpdate(${index}, 'qty', this.value)"></td>
+            <td class="mobile-detail" data-label="成本(單個)"><input type="number" value="${cost}" inputmode="decimal" oninput="debounceUpdate(${index}, 'cost', this.value)"></td>
+            <td class="mobile-detail" data-label="成本(人民幣)"><strong class="cost-cell">¥${formatMoney(costRmb)}</strong></td>
+            <td class="mobile-detail" data-label="賺取(港幣)"><strong class="${profitClass}">$${formatMoney(profitHkd)}</strong></td>
+            <td class="mobile-actions"><button class="delete-btn" onclick="deleteRecord(${item.row})">刪除此項</button></td>
+          `;
+        } else {
+          // 桌面版：完整 Table
+          tr.innerHTML = `
+            <td><input type="text" value="${date}" oninput="debounceUpdate(${index}, 'date', this.value)"></td>
+            <td><input type="text" value="${name}" oninput="debounceUpdate(${index}, 'name', this.value)"></td>
+            <td><input type="number" value="${price}" inputmode="decimal" oninput="debounceUpdate(${index}, 'price', this.value)"></td>
+            <td><input type="number" value="${qty}" inputmode="numeric" oninput="debounceUpdate(${index}, 'qty', this.value)"></td>
+            <td class="calculated rmb-cell">¥${formatMoney(totalRmb)}</td>
+            <td><input type="number" value="${cost}" inputmode="decimal" oninput="debounceUpdate(${index}, 'cost', this.value)"></td>
+            <td class="calculated cost-cell">¥${formatMoney(costRmb)}</td>
+            <td class="${profitClass}">$${formatMoney(profitHkd)}</td>
+            <td><button class="delete-btn" onclick="deleteRecord(${item.row})">刪除</button></td>
+          `;
+        }
         tbody.appendChild(tr);
       });
-
       historyCache[selectedMonthValue] = localDataCached;
       loadHistoryBar(); 
     }
@@ -338,89 +327,40 @@
       const item = localDataCached[dataIndex];
       item[field] = value;
       renderInterface();
-
       clearTimeout(debounceTimer);
       const statusEl = document.getElementById("savingStatus");
-      statusEl.innerText = "⏳ 等待輸入完成...";
-      statusEl.style.display = "block";
-
+      statusEl.innerText = "⏳ 等待輸入..."; statusEl.style.display = "block";
       debounceTimer = setTimeout(() => {
-        statusEl.innerText = "💾 自動儲存中...";
-        fetch(webAppUrl + "?action=update&row=" + item.row + "&field=" + field + "&value=" + encodeURIComponent(value), {
-          method: "POST"
-        })
-        .then(() => { setTimeout(() => { statusEl.style.display = "none"; }, 800); })
+        statusEl.innerText = "💾 儲存中...";
+        fetch(webAppUrl + "?action=update&row=" + item.row + "&field=" + field + "&value=" + encodeURIComponent(value), { method: "POST" })
+        .then(() => { setTimeout(() => { statusEl.style.display = "none"; }, 600); })
         .catch(err => { statusEl.innerText = "❌ 儲存失敗"; });
       }, 800);
     }
 
-    function openAddModal() {
-      document.getElementById("mDate").value = selectedMonthValue;
-      document.getElementById("mName").value = "";
-      document.getElementById("mPrice").value = "";
-      document.getElementById("mQty").value = "";
-      document.getElementById("mCost").value = "";
-      document.getElementById("addModal").classList.add("show");
-    }
-
-    function closeAddModal() {
-      document.getElementById("addModal").classList.remove("show");
-    }
-
+    function openAddModal() { document.getElementById("mDate").value = selectedMonthValue; document.getElementById("mName").value = ""; document.getElementById("mPrice").value = ""; document.getElementById("mQty").value = ""; document.getElementById("mCost").value = ""; document.getElementById("addModal").classList.add("show"); }
+    function closeAddModal() { document.getElementById("addModal").classList.remove("show"); }
     function submitAddModal() {
-      const date = document.getElementById("mDate").value;
-      const name = document.getElementById("mName").value;
-      const price = parseFloat(document.getElementById("mPrice").value);
-      const qty = parseFloat(document.getElementById("mQty").value);
-      const cost = parseFloat(document.getElementById("mCost").value);
-
+      const date = document.getElementById("mDate").value; const name = document.getElementById("mName").value;
+      const price = parseFloat(document.getElementById("mPrice").value); const qty = parseFloat(document.getElementById("mQty").value); const cost = parseFloat(document.getElementById("mCost").value);
       if (date && name && !isNaN(price) && !isNaN(qty) && !isNaN(cost)) {
         closeAddModal();
-        fetch(webAppUrl, {
-          method: "POST",
-          body: JSON.stringify({ date, name, price, qty, cost }),
-          headers: { "Content-Type": "text/plain" }
-        })
-        .then(() => { 
-          delete historyCache[selectedMonthValue]; 
-          loadData(); 
-        })
-        .catch(err => alert("儲存失敗：" + err));
-      } else {
-        alert("請完整輸入資料");
-      }
+        fetch(webAppUrl, { method: "POST", body: JSON.stringify({ date, name, price, qty, cost }), headers: { "Content-Type": "text/plain" } })
+        .then(() => { delete historyCache[selectedMonthValue]; loadData(); }).catch(err => alert("儲存失敗：" + err));
+      } else { alert("請完整輸入資料"); }
     }
 
-    function deleteRecord(row) {
-      if (confirm("確定要刪除這筆資料嗎？")) {
-        fetch(webAppUrl + "?action=delete&row=" + row, { method: "POST" }).then(() => {
-          delete historyCache[selectedMonthValue];
-          loadData();
-        });
-      }
-    }
-
-    function openSheet() {
-      window.open("https://docs.google.com/spreadsheets/d/1yApB5X49TBWWXnYQmVJVCgHGW8cpax43U43rCGgkBHg/edit?pli=1&gid=0#gid=0", "_blank");
-    }
+    function deleteRecord(row) { if (confirm("確定要刪除這筆資料嗎？")) { fetch(webAppUrl + "?action=delete&row=" + row, { method: "POST" }).then(() => { delete historyCache[selectedMonthValue]; loadData(); }); } }
+    function openSheet() { window.open("https://docs.google.com/spreadsheets/d/1yApB5X49TBWWXnYQmVJVCgHGW8cpax43U43rCGgkBHg/edit?pli=1&gid=0#gid=0", "_blank"); }
 
     window.onload = () => {
-      const today = new Date();
-      today.setMonth(today.getMonth() - 1); 
-      const prevYear = today.getFullYear();
-      const prevMonth = String(today.getMonth() + 1).padStart(2, "0");
-      const defaultMonthStr = prevYear + "-" + prevMonth;
-      
-      document.getElementById("monthSelect").value = defaultMonthStr;
-      selectedMonthValue = defaultMonthStr;
-      
-      loadData();
-      loadHistoryBar(); 
+      const today = new Date(); today.setMonth(today.getMonth() - 1); 
+      const defaultMonthStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}`;
+      document.getElementById("monthSelect").value = defaultMonthStr; selectedMonthValue = defaultMonthStr;
+      loadData(); loadHistoryBar(); 
     };
-
-    document.getElementById("addModal").addEventListener('click', function(e) {
-      if (e.target === this) closeAddModal();
-    });
+    document.getElementById("addModal").addEventListener('click', function(e) { if (e.target === this) closeAddModal(); });
+    window.addEventListener('resize', renderInterface);
   </script>
 </body>
 </html>
